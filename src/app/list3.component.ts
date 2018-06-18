@@ -1,27 +1,41 @@
 import { Component } from '@angular/core';
-import { appService } from './app.service';
-import { destroyPlatform } from '@angular/core/src/application_ref';
-import { Raster } from 'paper';
 @Component({
     selector: 'my-app',
     templateUrl: './list3.component.html',
+
 })
 export class AppList3 {
     private tool: any;
     private toolLine: any;
     private toolCircle: any;
     private toolraster: any;
-    public finder: Array<any> = ['StLine', 'circle', 'freehand','rasterPon'];
+    public finder: Array<any> = ['StLine', 'circle', 'freeHand', 'rasterPon', 'rectangle', 'ellipse'];
     private raster: any;
- 
+    private toolRectangle: any;
+    private toolEllipse: any;
+    private pathsArray : Array<any> = new Array();
+    private selectedPath: any;
+
+    // hitOption Activation 
+    public hitOptions = {
+        segments: true,
+        stroke: true,
+        fill: true,
+        tolerance: 5,
+        bounds: true
+    };
+
+
     constructor() {
-    
+
 
     }
     ngOnInit(): void {
 
         //setting up paper project on canvas
         //project one
+
+
         let canvas: any = document.getElementById('myCanvas');
         paper.setup(canvas);
         let projectIndex = paper.project.index;
@@ -39,17 +53,8 @@ export class AppList3 {
         let projectIndex3 = paper.project.index;
         canvas3.setAttribute("projectIndex", projectIndex3);
 
-        //Reused canvas three for project four
-        let canvas4: any = document.getElementById('myCanvas2');
-        paper.setup(canvas4);
-        let projectIndex4 = paper.project.index;
-        canvas3.setAttribute("projectIndex", projectIndex4);
+       
 
-        //Reused canvas three for project five
-        let canvas2: any = document.getElementById('myCanvas2');
-        paper.setup(canvas2);
-        let projectIndex2 = paper.project.index;
-        canvas2.setAttribute("projectIndex", projectIndex2);
 
         //Tools setup
         // Freehand tool
@@ -68,7 +73,6 @@ export class AppList3 {
 
         // straight line tool
         this.toolLine = new paper.Tool();
-        var firstx, firsty;
         var path2, from, to;
         this.toolLine.onMouseDown = (event) => {
             this.fn1(event.event);
@@ -87,37 +91,32 @@ export class AppList3 {
 
         // pan Tool
 
-        this.toolraster =new paper.Tool();
-        var tempX,tempY;
-        this.toolraster.onMouseDown=(event)=>{
+        this.toolraster = new paper.Tool();
+        var tempX, tempY;
+        this.toolraster.onMouseDown = (event) => {
             this.fn1(event.event);
-            //raster.position.x += 100;
-            console.log('down event',event.point);
-            tempX=event.point.x;
-            tempY=event.point.y;
-        }
-        this.toolraster.onMouseDrag=(event)=>{
-            console.log('drag event',event.point);
-            this.raster.position.x+=event.point.x-tempX;
-            this.raster.position.y+=event.point.y-tempY;
+
+            console.log('down event', event.point);
             tempX = event.point.x;
             tempY = event.point.y;
-            console.log('update raster positon',this.raster.position);
         }
-
-       
-        //this.raster.on('load', ()=> {
-         
+        this.toolraster.onMouseDrag = (event) => {
+            console.log('drag event', event.point);
+            this.raster.position.x += event.point.x - tempX;
+            this.raster.position.y += event.point.y - tempY;
+            tempX = event.point.x;
+            tempY = event.point.y;
+        }
 
         //circle Tool                                       
         this.toolCircle = new paper.Tool();
-        var path4, finalx, finaly, path3, startX, startY;
+        var path4, finalx, finaly, startX, startY;
         this.toolCircle.onMouseDown = (event) => {
             this.fn1(event.event);
             startX = event.point.x;
             startY = event.point.y;
             var path4 = new paper.Path.Circle(new paper.Point(event.point.x, event.point.y), 0);
-            path.strokeColor = 'black';
+            path4.strokeColor = 'black';
         }
         this.toolCircle.onMouseDrag = function (event) {
             if (path4) path4.remove();
@@ -127,6 +126,8 @@ export class AppList3 {
             path4 = new paper.Path.Circle(new paper.Point((finalx + startX) / 2, (finaly + startY) / 2), r / 2);
             path4.strokeColor = 'black';
             paper.view.draw();
+            startX = (finalx + startX) / 2;
+            startY = (finaly + startY) / 2;
         }
         this.toolCircle.onMouseUp = function (event) {
             if (path4) path4.remove();
@@ -137,21 +138,79 @@ export class AppList3 {
             path4.strokeColor = 'black';
         }
 
-        //Staright Line Code 
-        var path = new paper.Path();
-        path.strokeColor = 'black';
-        var start = new paper.Point(100, 100);
-        path.moveTo(start);
-        path.lineTo(new paper.Point(start.x + 100, start.y - 50));
+        //     //Staright Line Code 
+        //   var path = new paper.Path();
+        //     path.strokeColor = 'black';
+        //     var start = new paper.Point(100, 100);
+        //     path.moveTo(start);
+        //     path.lineTo(new paper.Point(start.x + 100, start.y - 50));
 
-        // Rectangle canvas setUp
-        var path5;
-        var rectangle = new paper.Path.Rectangle(new paper.Point(100, 100), new paper.Point(100, 150));
-        path5 = new paper.Path.Rectangle(rectangle);
-        path5.strokeColor = 'black';
+        // Rectangle tool setUp
+        var path5, fixedX, variableY;
+        this.toolRectangle = new paper.Tool();
+        this.toolRectangle.onMouseDown = (event) => {
+            this.fn1(event.event);
+            fixedX = new paper.Point(event.point.x, event.point.y);
+            variableY = new paper.Point(event.point.x, event.point.y);
+            //path5 = new paper.Path.Rectangle(fixedX, variableY);
+            //path5.strokeColor = 'black';
+           // paper.view.draw();
+        }
+        this.toolRectangle.onMouseDrag = (event) => {
+            if (path5) path5.remove();
+            let newPosition = new paper.Point(event.point.x, event.point.y);
+            path5 = new paper.Path.Rectangle({
+                from: fixedX,
+                to: newPosition,
+                strokeColor: 'black',
+                data: {
+                    name: "rectangle",
+                    color: "black"
+                }
+            });
+            paper.view.draw();
+        }
+        this.toolRectangle.onMouseMove = (event) => {
+            if (this.selectedPath) {
+                this.selectedPath.selected = false;
+                this.selectedPath = null;
+            }
+            if (event.event.target.getAttribute("projectIndex") == paper.project.index) {
+                let hitTest = paper.project.hitTest(event.point, this.hitOptions);
+                if (hitTest) {
+                    console.log('hitresult',hitTest);
+                    hitTest.item.selected = true;
+                    this.selectedPath = hitTest.item;
+                }
+                paper.view.draw();
+            }
+        }
+        this.toolRectangle.onMouseUp = (event) => {
+            this.pathsArray.push(path5);
+            path5 = null;
+        }
 
+        // Eclipse tool SetUp
+        var path6, EfixedX, EvariableY;
+        this.toolEllipse = new paper.Tool();
+        this.toolEllipse.onMouseDown = (event) => {
+            this.fn1(event.event);
+            EfixedX = new paper.Point(event.point.x, event.point.y);
+            EvariableY = new paper.Point(event.point.x, event.point.y);
+            let rect = new paper.Rectangle(EfixedX, EvariableY);
+            path6 = new paper.Path.Ellipse(rect);
+            path6.strokeColor = 'black';
+            paper.view.draw();
+        }
+        this.toolEllipse.onMouseDrag = (event) => {
+            if (path6) path6.remove();
+            let newPosition = new paper.Point(event.point.x, event.point.y);
+            let rect = new paper.Rectangle(EfixedX, newPosition);
+            path6 = new paper.Path.Ellipse(rect);
+            path6.strokeColor = 'black';
+            paper.view.draw();
+        }
     }
-
     toolFinder(args) {
         switch (args) {
             case 'freeHand': this.tool.activate();
@@ -161,49 +220,55 @@ export class AppList3 {
             case 'circle': this.toolCircle.activate();
                 break;
             case 'rasterPon': this.toolraster.activate();
-            break;
+                break;
+            case 'rectangle': this.toolRectangle.activate();
+                break;
+            case 'ellipse': this.toolEllipse.activate();
+                break;
         }
     }
-
-    
-
     fn1(ev) {
         let id = ev.target.getAttribute("projectIndex");
         if (id != null) {
             for (var x = 0; x < paper.projects.length; x++) {
                 if (paper.projects[x].index == id) {
                     paper.projects[x].activate();
+                    this.raster = this.selectRaster();
                 }
             }
         }
     }
+    myhit(event): any {
+        console.log("hi");
+    }
+
     loadImage() {
-        
         let img = new Image();
-        img.onload= ()=>{
+        let count = 0;
+        img.onload = () => {
             console.log("image on load");
-            
-            // if(paper.project.activeLayer._children.length!=0){
-            //     for(var x=0;x<paper.project.activeLayer._children.length;x++){
-            //     paper.project.activeLayer._children[x].remove();
-            //     }
-            // }
-        this.raster= new paper.Raster(img);
-        this.raster.position = paper.project.view.center; 
-        if(this.raster._loaded&&this.toolraster.activate()){
-            console.log('Now the image is definitely ready.');
-            
-            // this.toolraster.onMouseUp=(event)=>{
-                
-            // }
-        
+            this.raster = new paper.Raster(img);
+            this.raster.position = paper.project.view.center;
         }
-        
-        } 
-        img.onerror= ()=>{
+        img.onerror = () => {
             console.log("image on error");
         }
-        img.src = './assets/image.jpg';
+        let isRasterLoaded = this.selectRaster();
+        if (!isRasterLoaded)
+            img.src = './assets/image.jpg';
+        else
+            alert("image has already loaded");
+    }
+
+    selectRaster() {
+        if (paper.project && paper.project.activeLayer && paper.project.activeLayer.children) {
+            for (var arrLen = 0; arrLen < paper.project.activeLayer.children.length; arrLen++) {
+                if (paper.project.activeLayer.children[arrLen].className == 'Raster') {
+                    return paper.project.activeLayer.children[arrLen];
+                }
+            }
+        }
+        return null;
     }
 
     ngOnDestroy() {
