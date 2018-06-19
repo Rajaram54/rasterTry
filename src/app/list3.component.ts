@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { HitResult } from 'paper';
 @Component({
     selector: 'my-app',
     templateUrl: './list3.component.html',
@@ -9,12 +10,14 @@ export class AppList3 {
     private toolLine: any;
     private toolCircle: any;
     private toolraster: any;
-    public finder: Array<any> = ['StLine', 'circle', 'freeHand', 'rasterPon', 'rectangle', 'ellipse'];
+    public finder: Array<any> = ['StLine', 'circle', 'freeHand', 'rasterPan', 'rectangle', 'ellipse'];
     private raster: any;
     private toolRectangle: any;
     private toolEllipse: any;
-    private pathsArray : Array<any> = new Array();
+    private pathsArray: Array<any> = new Array();
     private selectedPath: any;
+    
+    private selectedPathHitresult: any;
 
     // hitOption Activation 
     public hitOptions = {
@@ -53,7 +56,7 @@ export class AppList3 {
         let projectIndex3 = paper.project.index;
         canvas3.setAttribute("projectIndex", projectIndex3);
 
-       
+
 
 
         //Tools setup
@@ -94,11 +97,15 @@ export class AppList3 {
         this.toolraster = new paper.Tool();
         var tempX, tempY;
         this.toolraster.onMouseDown = (event) => {
+
+
+
             this.fn1(event.event);
 
             console.log('down event', event.point);
             tempX = event.point.x;
             tempY = event.point.y;
+
         }
         this.toolraster.onMouseDrag = (event) => {
             console.log('drag event', event.point);
@@ -149,46 +156,68 @@ export class AppList3 {
         var path5, fixedX, variableY;
         this.toolRectangle = new paper.Tool();
         this.toolRectangle.onMouseDown = (event) => {
-            this.fn1(event.event);
-            fixedX = new paper.Point(event.point.x, event.point.y);
-            variableY = new paper.Point(event.point.x, event.point.y);
-            //path5 = new paper.Path.Rectangle(fixedX, variableY);
-            //path5.strokeColor = 'black';
-           // paper.view.draw();
+            console.log('mouse down');
+            if (!this.selectedPath) {
+                this.fn1(event.event);
+                fixedX = new paper.Point(event.point.x, event.point.y);
+                variableY = new paper.Point(event.point.x, event.point.y);
+            } else {
+                this.selectedPath.selected = false;
+                this.selectedPath.strokeColor = 'red';
+                this.selectedPath.data.color = 'red';
+
+            }
         }
         this.toolRectangle.onMouseDrag = (event) => {
-            if (path5) path5.remove();
-            let newPosition = new paper.Point(event.point.x, event.point.y);
-            path5 = new paper.Path.Rectangle({
-                from: fixedX,
-                to: newPosition,
-                strokeColor: 'black',
-                data: {
-                    name: "rectangle",
-                    color: "black"
-                }
-            });
-            paper.view.draw();
+            if (!this.selectedPath) {
+                console.log('drawing new');
+                if (path5) path5.remove();
+                let newPosition = new paper.Point(event.point.x, event.point.y);
+                path5 = new paper.Path.Rectangle({
+                    from: fixedX,
+                    to: newPosition,
+                    strokeColor: 'black',
+                    data: {
+                        name: "rectangle",
+                        color: "black"
+                    }
+                });
+                paper.view.draw();
+            } else {
+                console.log('resizing');
+                this.resizeRectangle(event,this.selectedPath, this.selectedPathHitresult);
+               
+               
+            }
         }
         this.toolRectangle.onMouseMove = (event) => {
+            console.log('mouse move');
             if (this.selectedPath) {
                 this.selectedPath.selected = false;
                 this.selectedPath = null;
+                this.selectedPathHitresult = null;
             }
-            if (event.event.target.getAttribute("projectIndex") == paper.project.index) {
+            if(event.event.target.getAttribute("projectIndex") == paper.project.index) {
                 let hitTest = paper.project.hitTest(event.point, this.hitOptions);
                 if (hitTest) {
-                    console.log('hitresult',hitTest);
+                    //console.log('hitresult', hitTest);
                     hitTest.item.selected = true;
                     this.selectedPath = hitTest.item;
+                    this.selectedPathHitresult = hitTest;
                 }
                 paper.view.draw();
             }
         }
         this.toolRectangle.onMouseUp = (event) => {
+            console.log('mouse up');
             this.pathsArray.push(path5);
             path5 = null;
+            if (this.selectedPath && this.selectedPath.data.color == 'red') {
+                this.selectedPath.strokeColor = 'black';
+                this.selectedPath.data.color = 'black';
+            }
         }
+
 
         // Eclipse tool SetUp
         var path6, EfixedX, EvariableY;
@@ -219,28 +248,43 @@ export class AppList3 {
                 break;
             case 'circle': this.toolCircle.activate();
                 break;
-            case 'rasterPon': this.toolraster.activate();
-                break;
+
             case 'rectangle': this.toolRectangle.activate();
                 break;
             case 'ellipse': this.toolEllipse.activate();
+                break;
+            case 'rasterPan': if (this.selectRaster()) { this.toolraster.activate(); } else {
+                paper.tool = null;
+            }
                 break;
         }
     }
     fn1(ev) {
         let id = ev.target.getAttribute("projectIndex");
+        let text;
         if (id != null) {
             for (var x = 0; x < paper.projects.length; x++) {
                 if (paper.projects[x].index == id) {
+                    //remove previous active text
+                    paper.project.activeLayer.children.forEach((item) => {
+                        if (item.className == 'PointText') item.remove();
+                    });
+
                     paper.projects[x].activate();
                     this.raster = this.selectRaster();
+                    // this.isActive=this.isActiveFun();
+
+                    //Activate Text 
+                    text = new paper.PointText(new paper.Point(10, 10));
+                    text.fillColor = 'red';
+                    text.content = 'Active';
                 }
+
+
             }
         }
     }
-    myhit(event): any {
-        console.log("hi");
-    }
+
 
     loadImage() {
         let img = new Image();
@@ -248,6 +292,7 @@ export class AppList3 {
         img.onload = () => {
             console.log("image on load");
             this.raster = new paper.Raster(img);
+            this.raster.sendToBack();
             this.raster.position = paper.project.view.center;
         }
         img.onerror = () => {
@@ -259,6 +304,8 @@ export class AppList3 {
         else
             alert("image has already loaded");
     }
+   
+
 
     selectRaster() {
         if (paper.project && paper.project.activeLayer && paper.project.activeLayer.children) {
@@ -271,12 +318,46 @@ export class AppList3 {
         return null;
     }
 
+    resizeRectangle(ev, path, hitresult) {
+        if (!path && !hitresult) return;
+        switch (hitresult.type) {
+            case 'bounds': {
+                switch (hitresult.name) {
+                    case "top-right": break;
+                    case "top-left": break;
+                    case "bottom-right": break;
+                    case "bottom-left": break;
+                    case "right-center": break;
+                    case "left-center": break;
+                    case "top-center": {
+                        path.bounds.topCenter.y = ev.point.y;
+                        break;
+                    }
+                    case "bottom-center": break;
+
+                }
+            }
+                break;
+            case 'stroke':{
+
+            }
+                break;
+        }
+    }
+
     ngOnDestroy() {
         var len = paper.projects.length;
         if (len != 0) {
             while (len - 1 != -1) {
                 paper.projects[len - 1].remove();
                 len--;
+            }
+        }
+        var toolDestroy = paper.tools.length;
+        if (toolDestroy != 0) {
+            while (toolDestroy - 1 != -1) {
+                paper.tools[toolDestroy - 1].remove();
+                toolDestroy--;
             }
         }
     }
