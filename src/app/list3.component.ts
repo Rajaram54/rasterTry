@@ -327,13 +327,22 @@ export class AppList3 {
                     case "top-left": break;
                     case "bottom-right": break;
                     case "bottom-left": break;
-                    case "right-center": break;
-                    case "left-center": break;
+                    case "right-center": {
+                        path.bounds.rightCenter.x = ev.point.x;
+                        break;
+                    }
+                    case "left-center": {
+                        path.bounds.leftCenter.x = ev.point.x;
+                        break;
+                    }
                     case "top-center": {
                         path.bounds.topCenter.y = ev.point.y;
                         break;
                     }
-                    case "bottom-center": break;
+                    case "bottom-center": {
+                        path.bounds.bottomCenter.y = ev.point.y;
+                        break;
+                    }
 
                 }
             }
