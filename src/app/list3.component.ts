@@ -3,14 +3,14 @@ import { HitResult, Tool } from 'paper';
 @Component({
     selector: 'my-app',
     templateUrl: './list3.component.html',
-
+    styleUrls: ['./list3.component.css']
 })
 export class AppList3 {
     private tool: any;
     private toolLine: any;
     private toolCircle: any;
     private toolraster: any;
-    public finder: Array<any> = ['mouse', 'StLine', 'circle', 'freeHand', 'rasterPan','magnify', 'rectangle', 'ellipse','zoom+', 'deleteLoadImg', 'BossSymbol'];
+    public finder: Array<any> = ['StLine', 'circle', 'freeHand', 'rasterPan','magnify', 'rectangle', 'ellipse','zoom', 'deleteLoadImg', 'BossSymbol'];
     private raster: any;
     private toolRectangle: any;
     private toolEllipse: any;
@@ -327,56 +327,73 @@ export class AppList3 {
             paper.view.draw();
         }
     }
-    toolFinder(args) {
-        switch (args) {
-            case 'mouse': {
-            paper.tool = null;
-
-                break;
-            }
-            case 'freeHand': this.tool.activate();
-                break;
-            case 'StLine': this.toolLine.activate();
-                break;
-            case 'circle': this.toolCircle.activate();
-                break;
-
-            case 'rectangle': this.toolRectangle.activate();
-                break;
-            case 'ellipse': this.toolEllipse.activate();
-                break;
-            case 'rasterPan': {
-                if (this.selectRaster()) {
-                    this.toolraster.activate();
-                   
+    toolFinder(event, args) {
+        if (event.target) {
+            if (event.target.getAttribute("selected") == 'true') {
+                event.target.setAttribute("selected", false);
+                event.target.style.color = '#333';
+                paper.tool = null;
+            } else {
+                for (let x = 0; x < event.target.parentNode.children.length; x++) {
+                    let sibling = event.target.parentNode.children[x];
+                    if (sibling.getAttribute("selected") == 'true') {
+                        sibling.setAttribute("selected", false);
+                        sibling.style.color = '#333';
+                    }
                 }
-                else {
-                    paper.tool = null;
+                event.target.setAttribute("selected", true);
+                event.target.style.color = 'red';
+                switch (args) {
+                    case 'freeHand': 
+                        this.tool.activate();
+                        break;
+                    case 'StLine': 
+                        this.toolLine.activate();
+                        break;
+                    case 'circle': 
+                        this.toolCircle.activate();
+                        break;
+                    case 'rectangle': this.toolRectangle.activate();
+                        break;
+                    case 'ellipse': this.toolEllipse.activate();
+                        break;
+                    case 'rasterPan': {
+                        if (this.selectRaster()) {
+                            this.toolraster.activate();
+        
+                        }
+                        else {
+                            paper.tool = null;
+                        }
+                        break;
+                    }
+                    case 'magnify': {
+                        if (this.selectRaster()) {
+                            this.toolMagnify.activate();
+        
+                        }
+                        else {
+                            paper.tool = null;
+                        }
+                        break;
+                    }
+                    case 'zoom': {
+                        if (this.selectRaster()) { this.toolZoomPlus.activate(); } else {
+                            paper.tool = null;
+                        } break;
+        
+                    }
+        
+                    case 'BossSymbol': {
+                        this.toolBoss.activate();
+                        break;
+                    }
+                    case 'deleteLoadImg': paper.project.activeLayer.children.forEach((img) => {
+                        if (img.className == 'Raster') img.remove();
+                    });
+                    default:  paper.tool = null;
                 }
-                break;
             }
-            case 'magnify':{
-                if (this.selectRaster()) {
-                    this.toolMagnify.activate();
-                 
-                }
-                else {
-                    paper.tool = null;
-                }
-                break;
-            }
-            case 'zoom+': {
-                if (this.selectRaster()) { this.toolZoomPlus.activate(); } else {
-                    paper.tool = null;
-                } break;
-
-            }
-            
-            case 'BossSymbol': {this.toolBoss.activate();
-            break;}
-            case 'deleteLoadImg': paper.project.activeLayer.children.forEach((img) => {
-                if (img.className == 'Raster') img.remove();
-            });
         }
     }
     fn1(ev) {
