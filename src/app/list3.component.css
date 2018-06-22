@@ -17,3 +17,21 @@
   .item:hover{
     cursor: pointer;
   }
+  .success {
+    border-color:white;
+    color: green;
+  }
+  
+  .success:hover {
+    background-color: #4CAF50;
+    color: white;
+  }
+  .btn {
+    background-color: white;
+    color: black;
+    cursor: pointer;
+  }
+  .pad{
+    padding-top: 20px;
+    padding-bottom:20px;
+  }

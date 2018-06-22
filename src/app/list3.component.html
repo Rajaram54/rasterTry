@@ -1,7 +1,10 @@
-<div class='container'>
-        <span class='item' *ngFor="let name of finder" (click)="toolFinder($event,name)">{{name}}</span>
+<div class="pad">
+        <span class='item' *ngFor="let name of finder"  ><button class="btn success" (click)="toolFinder($event,name)"name="{{name}}"> {{name}}</button></span>
 </div>
-<button (click)="loadImage()">Load Image</button>
+
+
+
+<button class="btn success" (click)="loadImage()">Load Image</button>
 <br>
 <canvas  id="myCanvas" resize style=" outline: black 3px solid;" ></canvas>
 <canvas  id="myCanvas1" resize style=" outline: black 3px solid;"></canvas>

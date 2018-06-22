@@ -5,23 +5,18 @@
     
   </h1>
   </div>
-  <div class="row">
-    <div class="col-md-3">
-   <ul>
-   
-      
-      <li><a [routerLink] = "['/list']">List 1</a></li>
-     
-      <li><a [routerLink] = "['/list2']">List 2</a></li>
-      <li><a [routerLink] = "['/list3']">List 3</a></li>
-   
-    </ul>
-    </div>
-   Two Way binding: <input [(ngModel)]='name' />
-    <p> {{name}}</p>  
- 
-     </div>
+  <!-- <mat-tab-group>
+    <mat-tab label="First"> Content 1 </mat-tab>
+    <mat-tab label="Second"> Content 2 </mat-tab>
+    <mat-tab label="Third"> Content 3 </mat-tab>
+  </mat-tab-group> -->
+  <div class="topnav">
+    <a [routerLink] = "['/list']" routerLinkActive="active">List 1</a>
+    <a [routerLink] = "['/list2']" routerLinkActive="active">List 2</a>
+    <a [routerLink] = "['/list3']" routerLinkActive="active">List 3</a>
+  </div>
+<div class="pad">
         <router-outlet></router-outlet> 
-        
+        </div>
 <!--     
         <div>{{value}}</div>-->
