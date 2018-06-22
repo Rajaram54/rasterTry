@@ -573,9 +573,16 @@ export class AppList3 {
                     case "bottom-right": break;
                     case "bottom-left": break;
                     case "right-center": {
-                //  this.redraw(ev, path);
-                //         console.log("right center");
-                path.bounds.rightCenter.x = ev.point.x;
+                console.log('path', path);
+                console.log('path.bounds.rightCenter',path.bounds.rightCenter)
+                        console.log("right center",ev.point.x);
+                        let xPoint = path.bounds.rightCenter.x;
+                        for(let index=0;index<path.segments.length;index++){
+                            if(path.segments[index].point.x == xPoint){
+                                path.segments[index].point.x = ev.point.x;
+                            }
+                        }
+                        //path.bounds.rightCenter.x = ev.point.x;
                         break;
                     }
                     case "left-center": {
