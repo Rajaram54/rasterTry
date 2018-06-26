@@ -21,7 +21,18 @@
             "assets": [
               "src/favicon.ico",
               "src/assets",
-              "src/assets/image.jpg"
+              "src/assets/abc.jpg",
+              "src/assets/pic1.jpg",
+              "src/assets/pic2.jpg",
+              "src/assets/pic3.jpg",
+              "src/assets/pic4.jpg",
+              "src/assets/pic5.jpg",
+              "src/assets/pic6.jpg",
+              "src/assets/pic7.jpg",
+              "src/assets/pic8.jpg",
+              "src/assets/pic9.jpg",
+              "src/assets/pic10.jpg",
+              "src/assets/pic11.jpg"
             ],
             "styles": [
               "src/styles.css"

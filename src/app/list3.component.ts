@@ -1,31 +1,34 @@
 import { Component } from '@angular/core';
 import { HitResult, Tool } from 'paper';
+import { appService } from './app.service';
 @Component({
     selector: 'my-app',
     templateUrl: './list3.component.html',
     styleUrls: ['./list3.component.css']
 })
 export class AppList3 {
-    private tool: any;
-    private toolLine: any;
-    private toolCircle: any;
-    private toolraster: any;
+    private tool: any; //Freehand tool
+    private toolLine: any;//Straight tool
+    private toolCircle: any;//circle tool
+    private toolraster: any;// Raster tool
     public finder: Array<any> = ['StLine', 'ellipse', 'rectangle', 'circle', 'BossSymbol', 'freeHand', 'rasterPan', 'magnify', 'zoom', 'deleteLoadImg', 'imgreset'];
-    private raster: any;
-    private toolRectangle: any;
-    private toolEllipse: any;
-    private Arrr: Array<any> = new Array();
-    private pathsArray: Array<any> = new Array();
-    private selectedPath: any;
-    private toolBoss: any;
-    private loadedImage: any;
-    private img: any;
-    private toolZoomPlus: any;
-    private toolMagnify: any;
-    private imgarray: Array<any> = new Array();
-    private imgsrc = './assets/abc.jpg';
-    private selectedPathHitresult: any;
-    private subRaster: any;
+    private raster: any;// Raster vaeriable
+    private toolRectangle: any;// Rect tool
+    private toolEllipse: any;//Elipse tool
+    private Arrr: Array<any> = new Array();// Circle Path Push
+    private pathsArray: Array<any> = new Array();//Rect Path Push
+    private selectedPath: any; // Hit Points
+    private toolBoss: any;//Boss tool
+    private loadedImage: any;//image loading in Raster
+    private img: any;// storing img variable
+    private toolZoomPlus: any;//Zooming tool
+    private toolMagnify: any;//Mnagnifying tool
+    private imgarray: Array<any> = new Array();//image pushing array in raster
+    private imgsrc: Array<any> = new Array();// image from service
+    private currentImgIndex: number = 0;// image index from service 
+    private selectedPathHitresult: any;// getting hit result
+    private subRaster: any; //creating subraster(magnify)
+
 
 
     // hitOption Activation 
@@ -38,9 +41,9 @@ export class AppList3 {
     };
 
 
-    constructor() {
+    constructor(public service: appService) {
 
-
+        this.imgsrc = this.service.getImages();
     }
     ngOnInit(): void {
 
@@ -432,9 +435,8 @@ export class AppList3 {
                         this.toolBoss.activate();
                         break;
                     }
-                    case 'deleteLoadImg': paper.project.activeLayer.children.forEach((img) => {
-                        if (img.className == 'Raster') img.remove();
-                    });
+                    case 'deleteLoadImg':this.removeCurrentRaster();
+                        break;
                     case 'imgreset':
                         {
                             for (let x = paper.project.activeLayer.children.length - 1; x >= 0; x--) {
@@ -471,17 +473,31 @@ export class AppList3 {
             }
         }
     }
-        loadImage() {
+    scrollFunc(ev) {
+        if (ev.deltaY < 0) {
+            console.log('scrolling up');
+            if (this.currentImgIndex > 0)
+                this.currentImgIndex--;
+        }
+        else{
+            console.log('scrolling down');
+            if (this.currentImgIndex < this.imgsrc.length)
+                this.currentImgIndex++;
+
+        }
+        this.loadImage();
+    }
+    loadImage() {
         let imagDiv = document.getElementById('images');
         this.loadedImage = null;
         if (imagDiv.childElementCount) {
             for (let index = 0; index < imagDiv.children.length; index++) {
-                if (imagDiv.children[index]['src'] == 'http://localhost:4200' + this.imgsrc.slice(1)) {
+                if (imagDiv.children[index]['src'] == 'http://localhost:4200' + this.imgsrc[this.currentImgIndex].slice(1)) {
                     this.loadedImage = imagDiv.children[index];
                 }
             }
         }
-        if (!this.selectRaster()) {
+        //if (!this.selectRaster()) {
             if (this.loadedImage) {
                 this.setupRaster(this.loadedImage);
             } else {
@@ -493,12 +509,13 @@ export class AppList3 {
                 this.img.onerror = () => {
                     console.log("image on error");
                 }
-                this.img.src = this.imgsrc;
+
+                this.img.src = this.imgsrc[this.currentImgIndex];
                 this.imgarray.push(this.img);
             }
-        } else {
-            alert("image has already loaded");
-        }
+        // } else {
+        //     alert("image has already loaded");
+        // }
     }
     selectRaster() {
         if (paper.project && paper.project.activeLayer && paper.project.activeLayer.children) {
@@ -528,73 +545,147 @@ export class AppList3 {
                 break;
         }
     }
-    // redraw(ev, path) {
-    //     console.log("came in");
-    //     let rc = path.bounds.bottomRight;
-    //     let lc = path.bounds.topLeft;
-    //     this.toolRectangle.onMouseDrag = (event) => {
-    //         if (path) path.remove();
-    //         let newPosition = new paper.Point(event.point.x, event.point.y);
-    //         path = new paper.Path.Rectangle({
-    //             from: lc,
-    //             to: (newPosition.x, newPosition.y),
-    //             strokeColor: 'black',
-    //             data: {
-    //                 name: "rectangle",
-    //                 color: "black"
-    //             }
-    //         });
-    //         paper.view.draw();
-    //     }
-    //     let flag = 0;
-    //     this.toolRectangle.onMouseUp = (event) => {
-    //         this.pathsArray.push(path);
-    //         path = null;
-    //         if (this.selectedPath && this.selectedPath.data.color == 'red') {
-    //             this.selectedPath.strokeColor = 'black';
-    //             this.selectedPath.data.color = 'black';
-    //             console.log("out");
-    //             flag = 1;
-    //             return;
-    //         }
-    //     }
-    //     console.log("left out");
-    //     if (flag == 1)
-    //         return;
-    // }
     resizeRectangle(ev, path, hitresult) {
         // console.log("delta"+ev.delta);
         if (!path && !hitresult) return;
         switch (hitresult.type) {
             case 'bounds': {
                 switch (hitresult.name) {
-                    case "top-right": break;
-                    case "top-left": break;
-                    case "bottom-right": break;
-                    case "bottom-left": break;
+                    case "top-right": {
+                        let xPoint = path.bounds.topRight.x;
+                        let yPoint = path.bounds.topRight.y;
+                        let xlPoint = path.bounds.bottomLeft.x;
+                        let ylPoint = path.bounds.bottomLeft.y;
+                        for (let index = 0; index < path.segments.length; index++) {
+                            if (path.segments[index].point.x == xPoint && xlPoint < ev.point.x) {
+                                path.segments[index].point.x = ev.point.x;
+                            }
+                            else if (path.segments[index].point.x == xlPoint && xlPoint > ev.point.x) {
+                                path.segments[index].point.x = ev.point.x;
+                            }
+                            if (path.segments[index].point.y == yPoint && ylPoint > ev.point.y) {
+                                path.segments[index].point.y = ev.point.y;
+                            }
+                            else if (path.segments[index].point.y == ylPoint && ylPoint < ev.point.y) {
+                                path.segments[index].point.y = ev.point.y;
+                            }
+                        }
+
+                    }
+                        break;
+                    case "top-left": {
+                        let xPoint = path.bounds.topLeft.x;
+                        let yPoint = path.bounds.topLeft.y;
+                        let xrPoint = path.bounds.bottomRight.x;
+                        let yrPoint = path.bounds.bottomRight.y;
+                        for (let index = 0; index < path.segments.length; index++) {
+                            if (path.segments[index].point.x == xPoint && xrPoint > ev.point.x) {
+                                path.segments[index].point.x = ev.point.x;
+                            }
+                            else if (path.segments[index].point.x == xrPoint && xrPoint < ev.point.x) {
+                                path.segments[index].point.x = ev.point.x;
+                            }
+                            if (path.segments[index].point.y == yPoint && yrPoint > ev.point.y) {
+                                path.segments[index].point.y = ev.point.y;
+                            }
+                            else if (path.segments[index].point.y == yrPoint && yrPoint < ev.point.y) {
+                                path.segments[index].point.y = ev.point.y;
+                            }
+                        }
+
+                    } break;
+                    case "bottom-right": {
+                        let xPoint = path.bounds.bottomRight.x;
+                        let yPoint = path.bounds.bottomRight.y;
+                        let xtPoint = path.bounds.topLeft.x;
+                        let ytPoint = path.bounds.topLeft.y;
+                        for (let index = 0; index < path.segments.length; index++) {
+                            if (path.segments[index].point.x == xPoint && xtPoint < ev.point.x) {
+                                path.segments[index].point.x = ev.point.x;
+                            }
+                            else if (path.segments[index].point.x == xtPoint && xtPoint > ev.point.x) {
+                                path.segments[index].point.x = ev.point.x;
+                            }
+                            if (path.segments[index].point.y == yPoint && ytPoint < ev.point.y) {
+                                path.segments[index].point.y = ev.point.y;
+                            }
+                            else if (path.segments[index].point.y == ytPoint && ytPoint > ev.point.y) {
+                                path.segments[index].point.y = ev.point.y;
+                            }
+                        }
+
+                    } break;
+                    case "bottom-left": {
+                        let xPoint = path.bounds.bottomLeft.x;
+                        let yPoint = path.bounds.bottomLeft.y;
+                        let xtPoint = path.bounds.topRight.x;
+                        let ytPoint = path.bounds.topRight.y;
+                        for (let index = 0; index < path.segments.length; index++) {
+                            if (path.segments[index].point.x == xPoint && xtPoint > ev.point.x) {
+                                path.segments[index].point.x = ev.point.x;
+                            }
+                            else if (path.segments[index].point.x == xtPoint && xtPoint < ev.point.x) {
+                                path.segments[index].point.x = ev.point.x;
+                            }
+                            if (path.segments[index].point.y == yPoint && ytPoint < ev.point.y) {
+                                path.segments[index].point.y = ev.point.y;
+                            }
+                            else if (path.segments[index].point.y == ytPoint && ytPoint > ev.point.y) {
+                                path.segments[index].point.y = ev.point.y;
+                            }
+                        }
+                    } break;
                     case "right-center": {
-                console.log('path', path);
-                console.log('path.bounds.rightCenter',path.bounds.rightCenter)
-                        console.log("right center",ev.point.x);
                         let xPoint = path.bounds.rightCenter.x;
-                        for(let index=0;index<path.segments.length;index++){
-                            if(path.segments[index].point.x == xPoint){
+                        let xlPoint = path.bounds.leftCenter.x;
+                        for (let index = 0; index < path.segments.length; index++) {
+                            if (path.segments[index].point.x == xPoint && xlPoint < ev.point.x) {
+                                path.segments[index].point.x = ev.point.x;
+                            }
+                            else if (xlPoint >= ev.point.x && path.segments[index].point.x == xlPoint) {
                                 path.segments[index].point.x = ev.point.x;
                             }
                         }
-                        //path.bounds.rightCenter.x = ev.point.x;
                         break;
                     }
                     case "left-center": {
-                        path.bounds.leftCenter.x = ev.point.x;
+                        let xlPoint = path.bounds.leftCenter.x;
+                        let xPoint = path.bounds.rightCenter.x;
+                        for (let index = 0; index < path.segments.length; index++) {
+                            if (path.segments[index].point.x == xlPoint && xPoint > ev.point.x) {
+                                path.segments[index].point.x = ev.point.x;
+                            }
+                            else if (xPoint <= ev.point.x && path.segments[index].point.x == xPoint) {
+                                path.segments[index].point.x = ev.point.x;
+                            }
+
+                        }
                         break;
                     }
                     case "top-center": {
-                        path.bounds.topCenter.y = ev.point.y;
+                        let yPoint = path.bounds.topCenter.y;
+                        let ybPoint = path.bounds.bottomCenter.y;
+                        for (let index = 0; index < path.segments.length; index++) {
+                            if (path.segments[index].point.y == yPoint && ybPoint > ev.point.y) {
+                                path.segments[index].point.y = ev.point.y;
+                            }
+                            else if (ybPoint <= ev.point.y && path.segments[index].point.y == ybPoint) {
+                                path.segments[index].point.y = ev.point.y;
+                            }
+                        }
                         break;
                     }
                     case "bottom-center": {
-                        path.bounds.bottomCenter.y = ev.point.y;
+                        let yPoint = path.bounds.bottomCenter.y;
+                        let ytPoint = path.bounds.topCenter.y;
+                        for (let index = 0; index < path.segments.length; index++) {
+                            if (path.segments[index].point.y == yPoint && ytPoint < ev.point.y) {
+                                path.segments[index].point.y = ev.point.y;
+                            }
+                            else if (ytPoint >= ev.point.y && path.segments[index].point.y == ytPoint) {
+                                path.segments[index].point.y = ev.point.y;
+                            }
+                        }
                         break;
                     }
                 }
@@ -629,11 +720,18 @@ export class AppList3 {
     }
     setupRaster(img) {
         console.log("image on load");
+        this.removeCurrentRaster();
         this.raster = new paper.Raster(img);
         this.raster.sendToBack();
         this.raster.width = paper.project.view.size.width;
         this.raster.height = paper.project.view.size.height;
         this.raster.position = paper.project.view.center;
+    }
+
+    removeCurrentRaster() {
+        paper.project.activeLayer.children.forEach((img) => {
+            if (img.className == 'Raster') img.remove();
+        });
     }
 
     ngOnDestroy() {

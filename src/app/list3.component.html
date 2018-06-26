@@ -6,9 +6,22 @@
 
 <button class="btn success" (click)="loadImage()">Load Image</button>
 <br>
-<canvas  id="myCanvas" resize style=" outline: black 3px solid;" ></canvas>
-<canvas  id="myCanvas1" resize style=" outline: black 3px solid;"></canvas>
-<canvas  id="myCanvas2" resize style=" outline: black 3px solid;"></canvas>
+<div class="container">
+        <div>
+                <canvas id="myCanvas" (wheel)="scrollFunc($event)" resize style=" outline: black 3px solid;"></canvas>
+                <div class="relative" style="height:150px;color:red;width:10px;float: right;background-color:grey"></div>
+        </div>
 
-<div id= "images" [style.display] = "'none'"  ></div>
-<div> </div>
+        <div>
+                <canvas id="myCanvas1" (wheel)="scrollFunc($event)" resize style=" outline: black 3px solid;"></canvas>
+        </div>
+
+
+        <div>
+                <canvas id="myCanvas2" (wheel)="scrollFunc($event)" resize style=" outline: black 3px solid;"></canvas>
+        </div>
+        
+</div>
+
+
+<div id="images" [style.display]="'none'"></div>
