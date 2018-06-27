@@ -35,3 +35,29 @@
     padding-top: 20px;
     padding-bottom:20px;
   }
+  .canvasContainer{
+    display: block;
+    position: absolute;
+    width: 100% !important;
+  }
+  .frame{
+    display: inline-block;
+    position: relative;
+  }
+  .scrollArea{
+    display: block;
+    position: absolute;
+    background-color: lightgrey;
+    width: 10px;
+    top: 1px;
+    opacity: 0.8;
+  }
+  .canvas{
+    border: black solid 1px;
+  }
+  .scroller{
+    display: block;
+    background-color: grey;
+    width: 100%;
+    position: absolute;
+  }

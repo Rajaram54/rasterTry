@@ -55,18 +55,24 @@ export class AppList3 {
         paper.setup(canvas);
         let projectIndex = paper.project.index;
         canvas.setAttribute("projectIndex", projectIndex);
+        canvas.setAttribute("imgIndex", 0);
 
         //project two
         let canvas1: any = document.getElementById('myCanvas1');
         paper.setup(canvas1);
         let projectIndex1 = paper.project.index;
         canvas1.setAttribute("projectIndex", projectIndex1);
+        canvas1.setAttribute("imgIndex", 0);
 
         //project three
         let canvas3: any = document.getElementById('myCanvas2');
         paper.setup(canvas3);
         let projectIndex3 = paper.project.index;
         canvas3.setAttribute("projectIndex", projectIndex3);
+        canvas3.setAttribute("imgIndex", 0);
+        let text = new paper.PointText(new paper.Point(10, 10));
+        text.fillColor = 'red';
+        text.content = 'Active';
 
 
         //Tools setup
@@ -456,15 +462,19 @@ export class AppList3 {
         let id = ev.target.getAttribute("projectIndex");
         let text;
         if (id != null) {
+            //remove previous active text
+            paper.project.activeLayer.children.forEach((item) => {
+                if (item.className == 'PointText') item.remove();
+            });
             for (var x = 0; x < paper.projects.length; x++) {
                 if (paper.projects[x].index == id) {
-                    //remove previous active text
-                    paper.project.activeLayer.children.forEach((item) => {
-                        if (item.className == 'PointText') item.remove();
-                    });
                     paper.projects[x].activate();
                     this.raster = this.selectRaster();
                     // this.isActive=this.isActiveFun();
+
+                    //get current projects image Index
+                    this.currentImgIndex = +paper.project.view.element.getAttribute('imgIndex');
+
                     //Activate Text 
                     text = new paper.PointText(new paper.Point(10, 10));
                     text.fillColor = 'red';
@@ -474,6 +484,7 @@ export class AppList3 {
         }
     }
     scrollFunc(ev) {
+        //set imgIndex to canvas
         if (ev.deltaY < 0) {
             console.log('scrolling up');
             if (this.currentImgIndex > 0)
@@ -481,10 +492,11 @@ export class AppList3 {
         }
         else{
             console.log('scrolling down');
-            if (this.currentImgIndex < this.imgsrc.length)
+            if (this.currentImgIndex < this.imgsrc.length -1)
                 this.currentImgIndex++;
 
         }
+        paper.project.view.element.setAttribute("imgIndex", `${this.currentImgIndex}`);
         this.loadImage();
     }
     loadImage() {
