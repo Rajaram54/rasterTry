@@ -28,7 +28,12 @@ export class AppList3 {
     private currentImgIndex: number = 0;// image index from service 
     private selectedPathHitresult: any;// getting hit result
     private subRaster: any; //creating subraster(magnify)
-
+    private tempx:any;
+    private tempy:any;
+    private isImg:any=false;
+    private isImg1:any=false;
+    private isImg2:any =false;
+    private isImg3:any=false;
 
 
     // hitOption Activation 
@@ -239,20 +244,21 @@ export class AppList3 {
 
         // pan Tool
         this.toolraster = new paper.Tool();
-        var tempX, tempY;
+        
         this.toolraster.onMouseDown = (event) => {
 
             this.fn1(event.event);
-            console.log('down event', event.point);
-            tempX = event.point.x;
-            tempY = event.point.y;
+            //console.log('down event', event.point);
+            this.tempx = event.point.x;
+            this.tempy = event.point.y;
         }
         this.toolraster.onMouseDrag = (event) => {
-            console.log('drag event', event.point);
-            this.raster.position.x += event.point.x - tempX;
-            this.raster.position.y += event.point.y - tempY;
-            tempX = event.point.x;
-            tempY = event.point.y;
+            //console.log('drag event', event.point);
+            console.log(this.raster.position);
+            this.raster.position.x += event.point.x - this.tempx;
+            this.raster.position.y += event.point.y - this.tempy;
+            this.tempx = event.point.x;
+            this.tempy = event.point.y;
         }
 
 
@@ -260,10 +266,11 @@ export class AppList3 {
 
         this.toolZoomPlus = new paper.Tool();
         // Scale the path horizontally by 300%
-        var zoom;
+        var zoom,xy;
         this.toolZoomPlus.onMouseDown = (event) => {
             this.fn1(event.event);
             zoom = event.point;
+           xy=event.point;
             console.log("paper.project.index", paper.project.index);
 
         }
@@ -271,7 +278,7 @@ export class AppList3 {
             let distance = (event.point.y - zoom.y);
             console.log(distance);
             let _zoomScale = 1 - (0.005 * (distance));
-            this.raster.scale(_zoomScale);
+            this.raster.scale(_zoomScale,xy);
             zoom = event.point;
         }
 
@@ -441,7 +448,10 @@ export class AppList3 {
                         this.toolBoss.activate();
                         break;
                     }
-                    case 'deleteLoadImg':this.removeCurrentRaster();
+                    case 'deleteLoadImg':{this.removeCurrentRaster();
+                        if(paper.project.view.element.id=="myCanvas"){this.isImg1=false;}
+                        if(paper.project.view.element.id=="myCanvas1"){this.isImg2=false;}
+                        if(paper.project.view.element.id=="myCanvas2"){this.isImg3=false;}}
                         break;
                     case 'imgreset':
                         {
@@ -485,6 +495,7 @@ export class AppList3 {
     }
     scrollFunc(ev) {
         //set imgIndex to canvas
+        if(!this.isImg) return;
         if (ev.deltaY < 0) {
             console.log('scrolling up');
             if (this.currentImgIndex > 0)
@@ -500,6 +511,10 @@ export class AppList3 {
         this.loadImage();
     }
     loadImage() {
+        this.isImg=true;
+        if(paper.project.view.element.id=="myCanvas"){this.isImg1=true;}
+        if(paper.project.view.element.id=="myCanvas1"){this.isImg2=true;}
+        if(paper.project.view.element.id=="myCanvas2"){this.isImg3=true;}
         let imagDiv = document.getElementById('images');
         this.loadedImage = null;
         if (imagDiv.childElementCount) {
@@ -652,7 +667,7 @@ export class AppList3 {
                         let xlPoint = path.bounds.leftCenter.x;
                         for (let index = 0; index < path.segments.length; index++) {
                             if (path.segments[index].point.x == xPoint && xlPoint < ev.point.x) {
-                                path.segments[index].point.x = ev.point.x;
+                                path.segments[index].point.x = ev.point.x; 
                             }
                             else if (xlPoint >= ev.point.x && path.segments[index].point.x == xlPoint) {
                                 path.segments[index].point.x = ev.point.x;
@@ -704,29 +719,21 @@ export class AppList3 {
             }
                 break;
             case 'stroke': {
-                let rightCorner = path.bounds.bottomRight;
-                let leftCorner = path.bounds.topLeft;
-                if (ev.point.x == rightCorner.x) {
-                    path.stroke.point.x = ev.point.x;
-                }
-                else if (ev.point.y == rightCorner.y) {
-                    path.stroke.point.y = ev.point.y;
-                }
-                else if (ev.point.x == leftCorner.x) {
-                    path.stroke.point.x = ev.point.x;
-                }
-                else if (ev.point.y == leftCorner.y) {
-                    path.stroke.point.y = ev.point.y;
-                }
+                path.translate(ev.delta);
             }
                 break;
         }
     }
     setUpSubRaster(raster, ev) {
-        let x = ev.point.x - 10;
-        let y = ev.point.y - 10;
+        let disX,disY;
+       
+            disX=this.raster.position.x/this.raster.scaling.x-paper.project.view.center.x;
+            disY=this.raster.position.y/this.raster.scaling.y-paper.project.view.center.y;
+        
+        let x = (ev.point.x - 10)/this.raster.scaling.x -disX;
+        let y = (ev.point.y - 10)/this.raster.scaling.y -disY;
         if (this.subRaster) this.subRaster.remove();
-        this.subRaster = raster.getSubRaster(x, y, 20, 20);
+        this.subRaster = raster.getSubRaster(x, y, 20/this.raster.scaling.x, 20/this.raster.scaling.y);
         this.subRaster.scale(2);
         paper.view.draw();
     }

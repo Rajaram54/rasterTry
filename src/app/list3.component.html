@@ -9,21 +9,21 @@
 <div class="canvasContainer">
         <div class="frame">
                 <canvas #canvas1 id="myCanvas" class="canvas" (wheel)="scrollFunc($event)"></canvas>
-                <div class="scrollArea" [style.left.px]="canvas1.width - 9" [style.height.px]="canvas1.height">
+                <div *ngIf="isImg1" class="scrollArea" [style.left.px]="canvas1.width - 9" [style.height.px]="canvas1.height">
                         <div class="scroller" [style.height.px]="canvas1.height/imgsrc.length" [style.top.px]="(canvas1.height/imgsrc.length) * ( +canvas1.getAttribute('imgIndex'))"></div>
                 </div>
         </div> 
 
         <div class="frame">
                 <canvas #canvas2 id="myCanvas1" class="canvas" (wheel)="scrollFunc($event)"></canvas>
-                <div class="scrollArea" [style.left.px]="canvas2.width - 9" [style.height.px]="canvas2.height">
+                <div  *ngIf="isImg2"  class="scrollArea" [style.left.px]="canvas2.width - 9" [style.height.px]="canvas2.height">
                         <div class="scroller" [style.height.px]="canvas2.height/imgsrc.length" [style.top.px]="(canvas2.height/imgsrc.length) * (+canvas2.getAttribute('imgIndex'))"></div>
                 </div>
         </div>
 
         <div class="frame">
                 <canvas #canvas3 id="myCanvas2" class="canvas" (wheel)="scrollFunc($event)"></canvas>
-                <div class="scrollArea" [style.left.px]="canvas3.width - 9" [style.height.px]="canvas3.height">
+                <div  *ngIf="isImg3"  class="scrollArea" [style.left.px]="canvas3.width - 9" [style.height.px]="canvas3.height">
                         <div class="scroller" [style.height.px]="canvas3.height/imgsrc.length" [style.top.px]="(canvas3.height/imgsrc.length) * (+canvas3.getAttribute('imgIndex'))"></div>
                 </div>
         </div>
