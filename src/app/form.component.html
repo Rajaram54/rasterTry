@@ -1,0 +1,36 @@
+<div class="row">
+        
+    <div class="col-md-4">
+           
+        <table>
+            <tr>
+                <td>Name:</td>
+                <td>
+                        <input #box>
+                </td>
+                <td #box>  {{value}}</td>
+            </tr>
+            <tr>
+                <td>Phone:</td>
+                <td>
+                    <input #box2 >
+                </td>
+                <td><p>{{value2}}</p></td>
+            </tr>
+            <tr>
+                <td>Age:</td>
+                <td>
+                    <input type="number" #box3>
+                </td>
+                <td><p>{{value3}}</p></td>
+            </tr>
+            <tr>
+                <td>Email:</td>
+                <td>
+                    <input type="email" required #box4 email (keyup.enter)="onEnter3(box4.value,box3.value,box2.value,box.value)">
+                </td>
+                <td><p>{{value4}}</p></td>
+            </tr>
+        </table>
+    </div>
+</div>

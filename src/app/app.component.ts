@@ -7,18 +7,7 @@ import { FormsModule} from '@angular/forms'
   selector: 'app-root',
    templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
-//   template: ` 
-//   <ul>
-//   <li><a [routerLink] = "['/list']">List 1</a></li>
-  
-//   <li><a [routerLink] = "['/list2']">List 2</a></li>
-// </ul>
-// <div  style="text-align:center" >
-// <router-outlet></router-outlet>
 
-// </div>
-
-// `
 
 })
 export class AppComponent {

@@ -254,7 +254,7 @@ export class AppList3 {
         }
         this.toolraster.onMouseDrag = (event) => {
             //console.log('drag event', event.point);
-            console.log(this.raster.position);
+          //  console.log(this.raster.position);
             this.raster.position.x += event.point.x - this.tempx;
             this.raster.position.y += event.point.y - this.tempy;
             this.tempx = event.point.x;
@@ -271,12 +271,12 @@ export class AppList3 {
             this.fn1(event.event);
             zoom = event.point;
            xy=event.point;
-            console.log("paper.project.index", paper.project.index);
+           // console.log("paper.project.index", paper.project.index);
 
         }
         this.toolZoomPlus.onMouseDrag = (event) => {
             let distance = (event.point.y - zoom.y);
-            console.log(distance);
+            //console.log(distance);
             let _zoomScale = 1 - (0.005 * (distance));
             this.raster.scale(_zoomScale,xy);
             zoom = event.point;
@@ -393,19 +393,19 @@ export class AppList3 {
                 event.target.setAttribute("selected", false);
                 event.target.style.color = '#333';
                 paper.tool = null;
-                console.log("BLACK");
+                //console.log("BLACK");
             } else {
                 for (let x = 0; x < event.target.parentNode.children.length; x++) {
                     let sibling = event.target.parentNode.children[x];
                     if (sibling.getAttribute("selected") == 'true') {
                         sibling.setAttribute("selected", false);
                         sibling.style.color = '#333';
-                        console.log("black");
+                 //       console.log("black");
                     }
                 }
                 event.target.setAttribute("selected", true);
                 event.target.style.color = 'red';
-                console.log("Red");
+               // console.log("Red");
                 switch (args) {
                     case 'freeHand':
                         this.tool.activate();
@@ -497,12 +497,12 @@ export class AppList3 {
         //set imgIndex to canvas
         if(!this.isImg) return;
         if (ev.deltaY < 0) {
-            console.log('scrolling up');
+           // console.log('scrolling up');
             if (this.currentImgIndex > 0)
                 this.currentImgIndex--;
         }
         else{
-            console.log('scrolling down');
+            //console.log('scrolling down');
             if (this.currentImgIndex < this.imgsrc.length -1)
                 this.currentImgIndex++;
 
@@ -510,6 +510,46 @@ export class AppList3 {
         paper.project.view.element.setAttribute("imgIndex", `${this.currentImgIndex}`);
         this.loadImage();
     }
+
+    cutImage(){
+        let imagDiv = document.getElementById('images');
+        this.loadedImage = null;
+        var currIndex;
+        if (imagDiv.childElementCount) {
+            for (let index = 0; index < imagDiv.children.length; index++) {
+                if (imagDiv.children[index]['src'] == 'http://localhost:4200' + this.imgsrc[this.currentImgIndex].slice(1)) {
+                    this.loadedImage = imagDiv.children[index];
+                    //console.log(this.loadedImage);
+                    currIndex=paper.project.index;
+                }
+            }
+        } if (this.loadedImage) {
+         console.log("Loaded img",this.selectRaster().bounds.bottomRight);
+            let rasLeftx;
+            let rasLefty;
+
+         let bottomright=this.selectRaster().bounds.bottomRight;
+         let topLeft=this.selectRaster().bounds.topLeft;
+         if(topLeft.x>0)
+         {
+            rasLeftx=0;
+
+         }else{
+             rasLeftx=0-topLeft.x;
+         }
+         if(topLeft.y>0)
+         {
+             rasLefty=0;
+         }
+         else{
+             rasLefty=0-topLeft.y;
+         }
+         
+
+
+        }
+    }
+    
     loadImage() {
         this.isImg=true;
         if(paper.project.view.element.id=="myCanvas"){this.isImg1=true;}
@@ -534,7 +574,7 @@ export class AppList3 {
                     this.setupRaster(this.img);
                 }
                 this.img.onerror = () => {
-                    console.log("image on error");
+                  //  console.log("image on error");
                 }
 
                 this.img.src = this.imgsrc[this.currentImgIndex];
