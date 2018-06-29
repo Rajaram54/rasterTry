@@ -30,6 +30,7 @@ export class AppList3 {
     private subRaster: any; //creating subraster(magnify)
     private tempx:any;
     private tempy:any;
+    private newraster:any;
     private isImg:any=false;
     private isImg1:any=false;
     private isImg2:any =false;
@@ -514,20 +515,21 @@ export class AppList3 {
     cutImage(){
         let imagDiv = document.getElementById('images');
         this.loadedImage = null;
-        var currIndex;
+        var currIndex,imgCurrIndex;
         if (imagDiv.childElementCount) {
             for (let index = 0; index < imagDiv.children.length; index++) {
                 if (imagDiv.children[index]['src'] == 'http://localhost:4200' + this.imgsrc[this.currentImgIndex].slice(1)) {
                     this.loadedImage = imagDiv.children[index];
-                    //console.log(this.loadedImage);
+                    imgCurrIndex=index;
                     currIndex=paper.project.index;
                 }
             }
         } if (this.loadedImage) {
          console.log("Loaded img",this.selectRaster().bounds.bottomRight);
-            let rasLeftx;
-            let rasLefty;
-
+            var rasLeftx;
+            var rasLefty;
+            var rasRigx;
+            var rasRigy;
          let bottomright=this.selectRaster().bounds.bottomRight;
          let topLeft=this.selectRaster().bounds.topLeft;
          if(topLeft.x>0)
@@ -544,9 +546,67 @@ export class AppList3 {
          else{
              rasLefty=0-topLeft.y;
          }
+         if(bottomright.x<paper.project.view.bounds.width){
+            rasRigx=bottomright.x;
+         }
+         else{
+             rasRigx=bottomright.x-rasLeftx;
+         }
+         if(bottomright.y<paper.project.view.bounds.height){
+             rasRigy=bottomright.y;
+         }
+         else{
+             rasRigy=bottomright.y-rasLefty;
+         }
+            var ratioHeight = this.imgarray[imgCurrIndex].naturalHeight / paper.project.view.bounds.height;
+            var ratioWidth = this.imgarray[imgCurrIndex].naturalWidth / paper.project.view.bounds.width;
+            var scaleLx = (ratioWidth * rasLeftx) / this.raster.scaling.x;
+            var scaleLy = (ratioHeight * rasLefty) / this.raster.scaling.y;
+            var scaleRx = (ratioWidth * rasRigx) / this.raster.scaling.x;
+            var scaleRy = (ratioHeight * rasRigy) / this.raster.scaling.y;
+            var canv = document.createElement('canvas');
+            canv.id = 'someId';
+            canv.width = this.loadedImage.naturalWidth;
+            canv.height = this.loadedImage.naturalHeight;
+            //document.body.appendChild(canv); 
+            paper.setup(canv);
+           
+            if (this.newraster) this.newraster.remove();
+            this.newraster = new paper.Raster(this.loadedImage);
+            this.newraster.position = paper.view.center;
+            paper.view.draw();
+            var ctx = canv.getContext('2d');
+            var imgData = ctx.getImageData(scaleLx, scaleLy, (scaleRx - scaleLx), (scaleRy - scaleLy));
+           
+            
+            let newCanvas = document.createElement('canvas');
+            newCanvas.width = imgData.width;
+            newCanvas.height = imgData.height;
+            newCanvas.id = 'cutImage';
+            let newContext = newCanvas.getContext('2d');           
+            newContext.putImageData(imgData, 0, 0);
+            let data = newCanvas.toDataURL();
+
+            let winOne = window.open();
+            winOne.document.body.appendChild(canv);
+
+            var w = window.open();
+            w.document.body.appendChild(newCanvas);
+
+            // canv && canv.remove();
+            // newCanvas && newCanvas.remove();
+
+            // document.body.appendChild(canv); 
+            // document.getElementById('Box1').appendChild(canv);
+            console.log(ratioHeight);
+            console.log(ratioWidth);
          
 
-
+            
+            
+            
+            
+            
         }
     }
     
@@ -579,6 +639,7 @@ export class AppList3 {
 
                 this.img.src = this.imgsrc[this.currentImgIndex];
                 this.imgarray.push(this.img);
+               
             }
         // } else {
         //     alert("image has already loaded");
