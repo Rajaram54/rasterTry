@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import {appService} from './app.service';
 
+
 @Component ({
    selector: 'my-app',
    template: `
@@ -13,13 +14,15 @@ import {appService} from './app.service';
      </li>
    </ul>
    </div>
+   <p>The hero's birthday is {{ birthday | date }}</p>
    `,
 })
 export class AppList2  {
     public heroes: Array<any>; 
+  
     constructor(public service: appService) {
         this.heroes = this.service.getList();
-        
+}
+  birthday = new Date(1988, 3, 15); // April 15, 1988  
       
     }
-}

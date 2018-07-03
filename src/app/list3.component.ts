@@ -28,13 +28,13 @@ export class AppList3 {
     private currentImgIndex: number = 0;// image index from service 
     private selectedPathHitresult: any;// getting hit result
     private subRaster: any; //creating subraster(magnify)
-    private tempx:any;
-    private tempy:any;
-    private newraster:any;
-    private isImg:any=false;
-    private isImg1:any=false;
-    private isImg2:any =false;
-    private isImg3:any=false;
+    private tempx: any;
+    private tempy: any;
+    private newraster: any;
+    private isImg: any = false;
+    private isImg1: any = false;
+    private isImg2: any = false;
+    private isImg3: any = false;
 
 
     // hitOption Activation 
@@ -245,7 +245,7 @@ export class AppList3 {
 
         // pan Tool
         this.toolraster = new paper.Tool();
-        
+
         this.toolraster.onMouseDown = (event) => {
 
             this.fn1(event.event);
@@ -255,7 +255,7 @@ export class AppList3 {
         }
         this.toolraster.onMouseDrag = (event) => {
             //console.log('drag event', event.point);
-          //  console.log(this.raster.position);
+            //  console.log(this.raster.position);
             this.raster.position.x += event.point.x - this.tempx;
             this.raster.position.y += event.point.y - this.tempy;
             this.tempx = event.point.x;
@@ -267,19 +267,19 @@ export class AppList3 {
 
         this.toolZoomPlus = new paper.Tool();
         // Scale the path horizontally by 300%
-        var zoom,xy;
+        var zoom, xy;
         this.toolZoomPlus.onMouseDown = (event) => {
             this.fn1(event.event);
             zoom = event.point;
-           xy=event.point;
-           // console.log("paper.project.index", paper.project.index);
+            xy = event.point;
+            // console.log("paper.project.index", paper.project.index);
 
         }
         this.toolZoomPlus.onMouseDrag = (event) => {
             let distance = (event.point.y - zoom.y);
             //console.log(distance);
             let _zoomScale = 1 - (0.005 * (distance));
-            this.raster.scale(_zoomScale,xy);
+            this.raster.scale(_zoomScale, xy);
             zoom = event.point;
         }
 
@@ -322,6 +322,7 @@ export class AppList3 {
             let r = Math.sqrt((Math.pow((finalx - start.x), 2) + Math.pow((finaly - start.y), 2)));
             path4 = new paper.Path.Circle(new paper.Point((finalx + start.x) / 2, (finaly + start.y) / 2), r / 2);
             path4.strokeColor = 'black';
+         // path4.fillColor='white';
             paper.view.draw();
         }
         this.toolCircle.onMouseUp = (event) => {
@@ -401,12 +402,12 @@ export class AppList3 {
                     if (sibling.getAttribute("selected") == 'true') {
                         sibling.setAttribute("selected", false);
                         sibling.style.color = '#333';
-                 //       console.log("black");
+                        //       console.log("black");
                     }
                 }
                 event.target.setAttribute("selected", true);
                 event.target.style.color = 'red';
-               // console.log("Red");
+                // console.log("Red");
                 switch (args) {
                     case 'freeHand':
                         this.tool.activate();
@@ -443,16 +444,17 @@ export class AppList3 {
                         if (this.selectRaster()) { this.toolZoomPlus.activate(); } else {
                             paper.tool = null;
                         } break;
-
                     }
                     case 'BossSymbol': {
                         this.toolBoss.activate();
                         break;
                     }
-                    case 'deleteLoadImg':{this.removeCurrentRaster();
-                        if(paper.project.view.element.id=="myCanvas"){this.isImg1=false;}
-                        if(paper.project.view.element.id=="myCanvas1"){this.isImg2=false;}
-                        if(paper.project.view.element.id=="myCanvas2"){this.isImg3=false;}}
+                    case 'deleteLoadImg': {
+                        this.removeCurrentRaster();
+                        if (paper.project.view.element.id == "myCanvas") { this.isImg1 = false; }
+                        if (paper.project.view.element.id == "myCanvas1") { this.isImg2 = false; }
+                        if (paper.project.view.element.id == "myCanvas2") { this.isImg3 = false; }
+                    }
                         break;
                     case 'imgreset':
                         {
@@ -482,10 +484,8 @@ export class AppList3 {
                     paper.projects[x].activate();
                     this.raster = this.selectRaster();
                     // this.isActive=this.isActiveFun();
-
                     //get current projects image Index
                     this.currentImgIndex = +paper.project.view.element.getAttribute('imgIndex');
-
                     //Activate Text 
                     text = new paper.PointText(new paper.Point(10, 10));
                     text.fillColor = 'red';
@@ -496,68 +496,64 @@ export class AppList3 {
     }
     scrollFunc(ev) {
         //set imgIndex to canvas
-        if(!this.isImg) return;
+        if (!this.isImg) return;
         if (ev.deltaY < 0) {
-           // console.log('scrolling up');
+            // console.log('scrolling up');
             if (this.currentImgIndex > 0)
                 this.currentImgIndex--;
         }
-        else{
+        else {
             //console.log('scrolling down');
-            if (this.currentImgIndex < this.imgsrc.length -1)
+            if (this.currentImgIndex < this.imgsrc.length - 1)
                 this.currentImgIndex++;
-
         }
         paper.project.view.element.setAttribute("imgIndex", `${this.currentImgIndex}`);
         this.loadImage();
     }
 
-    cutImage(){
+    cutImage() {
         let imagDiv = document.getElementById('images');
         this.loadedImage = null;
-        var currIndex,imgCurrIndex;
+        var currIndex, imgCurrIndex;
         if (imagDiv.childElementCount) {
             for (let index = 0; index < imagDiv.children.length; index++) {
                 if (imagDiv.children[index]['src'] == 'http://localhost:4200' + this.imgsrc[this.currentImgIndex].slice(1)) {
                     this.loadedImage = imagDiv.children[index];
-                    imgCurrIndex=index;
-                    currIndex=paper.project.index;
+                    imgCurrIndex = index;
+                    currIndex = paper.project.index;
                 }
             }
         } if (this.loadedImage) {
-         console.log("Loaded img",this.selectRaster().bounds.bottomRight);
+            console.log("Loaded img", this.selectRaster().bounds.bottomRight);
             var rasLeftx;
             var rasLefty;
             var rasRigx;
             var rasRigy;
-         let bottomright=this.selectRaster().bounds.bottomRight;
-         let topLeft=this.selectRaster().bounds.topLeft;
-         if(topLeft.x>0)
-         {
-            rasLeftx=0;
-
-         }else{
-             rasLeftx=0-topLeft.x;
-         }
-         if(topLeft.y>0)
-         {
-             rasLefty=0;
-         }
-         else{
-             rasLefty=0-topLeft.y;
-         }
-         if(bottomright.x<paper.project.view.bounds.width){
-            rasRigx=bottomright.x;
-         }
-         else{
-             rasRigx=bottomright.x-rasLeftx;
-         }
-         if(bottomright.y<paper.project.view.bounds.height){
-             rasRigy=bottomright.y;
-         }
-         else{
-             rasRigy=bottomright.y-rasLefty;
-         }
+            let bottomright = this.selectRaster().bounds.bottomRight;
+            let topLeft = this.selectRaster().bounds.topLeft;
+            if (topLeft.x > 0) {
+                rasLeftx = 0;
+            } else {
+                rasLeftx = 0 - topLeft.x;
+            }
+            if (topLeft.y > 0) {
+                rasLefty = 0;
+            }
+            else {
+                rasLefty = 0 - topLeft.y;
+            }
+            if (bottomright.x < paper.project.view.bounds.width) {
+                rasRigx = bottomright.x;
+            }
+            else {
+                rasRigx = bottomright.x - rasLeftx;
+            }
+            if (bottomright.y < paper.project.view.bounds.height) {
+                rasRigy = bottomright.y;
+            }
+            else {
+                rasRigy = bottomright.y - rasLefty;  
+            }
             var ratioHeight = this.imgarray[imgCurrIndex].naturalHeight / paper.project.view.bounds.height;
             var ratioWidth = this.imgarray[imgCurrIndex].naturalWidth / paper.project.view.bounds.width;
             var scaleLx = (ratioWidth * rasLeftx) / this.raster.scaling.x;
@@ -570,51 +566,31 @@ export class AppList3 {
             canv.height = this.loadedImage.naturalHeight;
             //document.body.appendChild(canv); 
             paper.setup(canv);
-           
             if (this.newraster) this.newraster.remove();
             this.newraster = new paper.Raster(this.loadedImage);
             this.newraster.position = paper.view.center;
             paper.view.draw();
             var ctx = canv.getContext('2d');
             var imgData = ctx.getImageData(scaleLx, scaleLy, (scaleRx - scaleLx), (scaleRy - scaleLy));
-           
-            
             let newCanvas = document.createElement('canvas');
             newCanvas.width = imgData.width;
             newCanvas.height = imgData.height;
             newCanvas.id = 'cutImage';
-            let newContext = newCanvas.getContext('2d');           
+            let newContext = newCanvas.getContext('2d');
             newContext.putImageData(imgData, 0, 0);
             let data = newCanvas.toDataURL();
-
             let winOne = window.open();
             winOne.document.body.appendChild(canv);
-
             var w = window.open();
             w.document.body.appendChild(newCanvas);
-
-            // canv && canv.remove();
-            // newCanvas && newCanvas.remove();
-
-            // document.body.appendChild(canv); 
-            // document.getElementById('Box1').appendChild(canv);
-            console.log(ratioHeight);
-            console.log(ratioWidth);
-         
-
-            
-            
-            
-            
-            
         }
     }
-    
+
     loadImage() {
-        this.isImg=true;
-        if(paper.project.view.element.id=="myCanvas"){this.isImg1=true;}
-        if(paper.project.view.element.id=="myCanvas1"){this.isImg2=true;}
-        if(paper.project.view.element.id=="myCanvas2"){this.isImg3=true;}
+        this.isImg = true;
+        if (paper.project.view.element.id == "myCanvas") { this.isImg1 = true; }
+        if (paper.project.view.element.id == "myCanvas1") { this.isImg2 = true; }
+        if (paper.project.view.element.id == "myCanvas2") { this.isImg3 = true; }
         let imagDiv = document.getElementById('images');
         this.loadedImage = null;
         if (imagDiv.childElementCount) {
@@ -625,22 +601,22 @@ export class AppList3 {
             }
         }
         //if (!this.selectRaster()) {
-            if (this.loadedImage) {
-                this.setupRaster(this.loadedImage);
-            } else {
-                this.img = new Image();
-                imagDiv.appendChild(this.img);
-                this.img.onload = () => {
-                    this.setupRaster(this.img);
-                }
-                this.img.onerror = () => {
-                  //  console.log("image on error");
-                }
-
-                this.img.src = this.imgsrc[this.currentImgIndex];
-                this.imgarray.push(this.img);
-               
+        if (this.loadedImage) {
+            this.setupRaster(this.loadedImage);
+        } else {
+            this.img = new Image();
+            imagDiv.appendChild(this.img);
+            this.img.onload = () => {
+                this.setupRaster(this.img);
             }
+            this.img.onerror = () => {
+                //  console.log("image on error");
+            }
+
+            this.img.src = this.imgsrc[this.currentImgIndex];
+            this.imgarray.push(this.img);
+
+        }
         // } else {
         //     alert("image has already loaded");
         // }
@@ -768,7 +744,7 @@ export class AppList3 {
                         let xlPoint = path.bounds.leftCenter.x;
                         for (let index = 0; index < path.segments.length; index++) {
                             if (path.segments[index].point.x == xPoint && xlPoint < ev.point.x) {
-                                path.segments[index].point.x = ev.point.x; 
+                                path.segments[index].point.x = ev.point.x;
                             }
                             else if (xlPoint >= ev.point.x && path.segments[index].point.x == xlPoint) {
                                 path.segments[index].point.x = ev.point.x;
@@ -826,15 +802,15 @@ export class AppList3 {
         }
     }
     setUpSubRaster(raster, ev) {
-        let disX,disY;
-       
-            disX=this.raster.position.x/this.raster.scaling.x-paper.project.view.center.x;
-            disY=this.raster.position.y/this.raster.scaling.y-paper.project.view.center.y;
-        
-        let x = (ev.point.x - 10)/this.raster.scaling.x -disX;
-        let y = (ev.point.y - 10)/this.raster.scaling.y -disY;
+        let disX, disY;
+
+        disX = this.raster.position.x / this.raster.scaling.x - paper.project.view.center.x;
+        disY = this.raster.position.y / this.raster.scaling.y - paper.project.view.center.y;
+
+        let x = (ev.point.x - 10) / this.raster.scaling.x - disX;
+        let y = (ev.point.y - 10) / this.raster.scaling.y - disY;
         if (this.subRaster) this.subRaster.remove();
-        this.subRaster = raster.getSubRaster(x, y, 20/this.raster.scaling.x, 20/this.raster.scaling.y);
+        this.subRaster = raster.getSubRaster(x, y, 20 / this.raster.scaling.x, 20 / this.raster.scaling.y);
         this.subRaster.scale(2);
         paper.view.draw();
     }
