@@ -517,7 +517,7 @@ export class AppList3 {
         var currIndex, imgCurrIndex;
         if (imagDiv.childElementCount) {
             for (let index = 0; index < imagDiv.children.length; index++) {
-                if (imagDiv.children[index]['src'] == 'http://localhost:4200' + this.imgsrc[this.currentImgIndex].slice(1)) {
+                if (imagDiv.children[index]['src'] == `${window.location.protocol}//${window.location.host}${this.imgsrc[this.currentImgIndex].slice(1)}`) {
                     this.loadedImage = imagDiv.children[index];
                     imgCurrIndex = index;
                     currIndex = paper.project.index;
@@ -531,35 +531,52 @@ export class AppList3 {
             var rasRigy;
             let bottomright = this.selectRaster().bounds.bottomRight;
             let topLeft = this.selectRaster().bounds.topLeft;
-            if (topLeft.x > 0) {
-                rasLeftx = 0;
-            } else {
-                rasLeftx = 0 - topLeft.x;
+            //for top left
+            if (topLeft.x >= 0 && topLeft.x <= paper.project.view.bounds.width) {
+                rasLeftx = topLeft.x;
             }
-            if (topLeft.y > 0) {
+            else if (topLeft.x < 0) {
+                rasLeftx = 0;
+            }
+            else if (topLeft.x > paper.project.view.bounds.width) {
+                rasLeftx = paper.project.view.bounds.width;
+            }
+            if (topLeft.y >= 0 && topLeft.y <= paper.project.view.bounds.height) {
+                rasLefty = topLeft.y;
+            }
+            else if (topLeft.y < 0) {
                 rasLefty = 0;
             }
-            else {
-                rasLefty = 0 - topLeft.y;
+            else if (topLeft.y > paper.project.view.bounds.height) {
+                rasLefty = paper.project.view.bounds.height;
             }
-            if (bottomright.x < paper.project.view.bounds.width) {
+
+            //for bottom right
+            if (bottomright.x >= 0 && bottomright.x <= paper.project.view.bounds.width) {
                 rasRigx = bottomright.x;
             }
-            else {
-                rasRigx = bottomright.x - rasLeftx;
+            else if (bottomright.x < 0) {
+                rasRigx = 0;
             }
-            if (bottomright.y < paper.project.view.bounds.height) {
+            else if (bottomright.x > paper.project.view.bounds.width) {
+                rasRigx = paper.project.view.bounds.width;
+            }
+            if (bottomright.y >= 0 && bottomright.y <= paper.project.view.bounds.height) {
                 rasRigy = bottomright.y;
             }
-            else {
-                rasRigy = bottomright.y - rasLefty;  
+            else if (bottomright.y < 0) {
+                rasRigy = 0;
             }
+            else if (bottomright.y > paper.project.view.bounds.height) {
+                rasRigy = paper.project.view.bounds.height;
+            }
+
             var ratioHeight = this.imgarray[imgCurrIndex].naturalHeight / paper.project.view.bounds.height;
             var ratioWidth = this.imgarray[imgCurrIndex].naturalWidth / paper.project.view.bounds.width;
-            var scaleLx = (ratioWidth * rasLeftx) / this.raster.scaling.x;
-            var scaleLy = (ratioHeight * rasLefty) / this.raster.scaling.y;
-            var scaleRx = (ratioWidth * rasRigx) / this.raster.scaling.x;
-            var scaleRy = (ratioHeight * rasRigy) / this.raster.scaling.y;
+            var scaleLx = (ratioWidth * (rasLeftx - topLeft.x)) / this.raster.scaling.x;
+            var scaleLy = (ratioHeight * (rasLefty - topLeft.y)) / this.raster.scaling.y;
+            var scaleRx = (ratioWidth * (rasRigx - topLeft.x)) / this.raster.scaling.x;
+            var scaleRy = (ratioHeight * (rasRigy - topLeft.y)) / this.raster.scaling.y;
             var canv = document.createElement('canvas');
             canv.id = 'someId';
             canv.width = this.loadedImage.naturalWidth;
@@ -583,6 +600,9 @@ export class AppList3 {
             winOne.document.body.appendChild(canv);
             var w = window.open();
             w.document.body.appendChild(newCanvas);
+            //remove newly created project and activate old project
+            paper.project.remove();
+            paper.projects[currIndex].activate();
         }
     }
 
@@ -595,7 +615,7 @@ export class AppList3 {
         this.loadedImage = null;
         if (imagDiv.childElementCount) {
             for (let index = 0; index < imagDiv.children.length; index++) {
-                if (imagDiv.children[index]['src'] == 'http://localhost:4200' + this.imgsrc[this.currentImgIndex].slice(1)) {
+                if (imagDiv.children[index]['src'] == `${window.location.protocol}//${window.location.host}${this.imgsrc[this.currentImgIndex].slice(1)}`) {
                     this.loadedImage = imagDiv.children[index];
                 }
             }
@@ -617,9 +637,6 @@ export class AppList3 {
             this.imgarray.push(this.img);
 
         }
-        // } else {
-        //     alert("image has already loaded");
-        // }
     }
     selectRaster() {
         if (paper.project && paper.project.activeLayer && paper.project.activeLayer.children) {
