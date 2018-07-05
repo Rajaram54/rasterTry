@@ -8,7 +8,7 @@ import { RouterModule, Routes} from '@angular/router';
 import { appService } from 'src/app/app.service';
 import { FormsModule }   from '@angular/forms';
 import { Form } from './form.component';
-
+import {LocationStrategy, HashLocationStrategy} from '@angular/common';
 
 const appRoutes: Routes = [
   { path: 'list', component: Applist },
@@ -22,7 +22,7 @@ const appRoutes: Routes = [
     AppComponent,Applist,AppList2,AppList3,Form],
   imports: [
     BrowserModule ,RouterModule.forRoot(appRoutes),FormsModule,],
-  providers: [appService],
+  providers: [appService,{ provide: LocationStrategy, useClass: HashLocationStrategy}],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

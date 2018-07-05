@@ -12,6 +12,9 @@ export class Form {
     value2 = "";
     value3 = "";
     value4 = "";
+    value5="";
+    value6=" ";
+    value7=" ";
 
 
     onEnter3(value4: string, value3: string, value2: string, value1: string) {

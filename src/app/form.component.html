@@ -4,33 +4,55 @@
            
         <table>
             <tr>
-                <td>Name:</td>
+                <td>ID:</td>
                 <td>
-                        <input #box>
+                        <input id="id" #box>
                 </td>
                 <td >  {{value}}</td>
             </tr>
             <tr>
-                <td>Phone:</td>
+                <td>Name:</td>
                 <td>
-                    <input #box2 >
+                    <input id="name" #box2 >
                 </td>
                 <td><p>{{value2}}</p></td>
             </tr>
             <tr>
-                <td>Age:</td>
+                <td>Email:</td>
                 <td>
-                    <input type="number" #box3>
+                    <input id="email" type="email" #box3>
                 </td>
                 <td><p>{{value3}}</p></td>
             </tr>
             <tr>
-                <td>Email:</td>
+                <td>Password:</td>
                 <td>
-                    <input type="email" required #box4 email (keyup.enter)="onEnter3(box4.value,box3.value,box2.value,box.value)">
+                    <input  id="password" type="password" required #box4 >
                 </td>
                 <td><p>{{value4}}</p></td>
             </tr>
+            <tr>
+                <td>Desination:</td>
+                <td>
+                    <input type="text" id="Desination" required #box4 >
+                </td>
+                <td><p>{{value5}}</p></td>
+            </tr>
+            <tr>
+                <td>Date:</td>
+                <td>
+                    <input type="date" required #box4 id="date" >
+                </td>
+                <td><p>{{value6}}</p></td>
+            </tr>
+            <tr>
+                <td>Date:</td>
+                <td>
+                    <input type="date" required #box4 id="date1">
+                </td>
+                <td><p>{{value7}}</p></td>
+            </tr>
         </table>
+        <input type="submit" (click)="fun()">
     </div>
 </div>
