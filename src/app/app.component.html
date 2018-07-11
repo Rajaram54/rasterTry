@@ -6,18 +6,24 @@
   </h1>
   </div>
   <!-- <mat-tab-group>
-    <mat-tab label="First"> Content 1 </mat-tab>
-    <mat-tab label="Second"> Content 2 </mat-tab>
-    <mat-tab label="Third"> Content 3 </mat-tab>
+    <mat-tab label="First" > <my-app1></my-app1> </mat-tab>
+    <mat-tab label="Second"> <my-app2></my-app2> </mat-tab>
+    <mat-tab label="Third"> <my-app3></my-app3> </mat-tab>
+    <mat-tab label="four"> <my-app4></my-app4> </mat-tab>
+    
   </mat-tab-group> -->
+  
   <div class="topnav">
     <a [routerLink] = "['/list']" routerLinkActive="active">List 1</a>
     <a [routerLink] = "['/list2']" routerLinkActive="active">List 2</a>
     <a [routerLink] = "['/list3']" routerLinkActive="active">List 3</a>
     <a [routerLink] = "['/form']" routerLinkActive="active">Form</a>
-  </div>
+    <a [routerLink] = "['/getdata']" routerLinkActive="active">Get Data</a>
+    <!-- <a [routerLink]="['/params',5]" routerLinkActive="active">Params Example</a> -->
+    
+  </div> 
 <div class="pad">
         <router-outlet></router-outlet> 
         </div>
-<!--     
-        <div>{{value}}</div>-->
+     
+ 

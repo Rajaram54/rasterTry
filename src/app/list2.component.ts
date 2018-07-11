@@ -3,7 +3,7 @@ import {appService} from './app.service';
 
 
 @Component ({
-   selector: 'my-app',
+   selector: 'my-app2',
    template: `
    <h1>{{title}}</h1>
   <div  style="width: 25%; margin-left: auto; margin-right: auto;">

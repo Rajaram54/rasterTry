@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { HitResult, Tool } from 'paper';
 import { appService } from './app.service';
 @Component({
-    selector: 'my-app',
+    selector: 'my-app3',
     templateUrl: './list3.component.html',
     styleUrls: ['./list3.component.css']
 })
@@ -95,9 +95,6 @@ export class AppList3 {
         this.tool.onMouseDrag = function (event) {
             path1.add(event.point);
         }
-
-
-
         // Rectangle tool setUp
         var path5, fixedX;
         this.toolRectangle = new paper.Tool();
@@ -595,17 +592,16 @@ export class AppList3 {
             newCanvas.id = 'cutImage';
             let newContext = newCanvas.getContext('2d');
             newContext.putImageData(imgData, 0, 0);
-            let data = newCanvas.toDataURL();
+            //let data = newCanvas.toDataURL();
             let winOne = window.open();
-            winOne.document.body.appendChild(canv);
+            winOne.document.body.appendChild(newCanvas);
             var w = window.open();
-            w.document.body.appendChild(newCanvas);
+          w.document.body.appendChild(newCanvas);
             //remove newly created project and activate old project
             paper.project.remove();
             paper.projects[currIndex].activate();
         }
     }
-
     loadImage() {
         this.isImg = true;
         if (paper.project.view.element.id == "myCanvas") { this.isImg1 = true; }
@@ -648,7 +644,6 @@ export class AppList3 {
         }
         return null;
     }
-
     resizeCircle(ev, path, hitresult) {
         if (!path && !hitresult) return;
         switch (hitresult.type) {
@@ -691,7 +686,6 @@ export class AppList3 {
                                 path.segments[index].point.y = ev.point.y;
                             }
                         }
-
                     }
                         break;
                     case "top-left": {
