@@ -596,7 +596,7 @@ export class AppList3 {
             let winOne = window.open();
             winOne.document.body.appendChild(newCanvas);
             var w = window.open();
-          w.document.body.appendChild(newCanvas);
+             w.document.body.appendChild(newCanvas);
             //remove newly created project and activate old project
             paper.project.remove();
             paper.projects[currIndex].activate();
@@ -628,10 +628,8 @@ export class AppList3 {
             this.img.onerror = () => {
                 //  console.log("image on error");
             }
-
             this.img.src = this.imgsrc[this.currentImgIndex];
             this.imgarray.push(this.img);
-
         }
     }
     selectRaster() {

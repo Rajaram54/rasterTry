@@ -6,8 +6,11 @@ import { NgModule } from '@angular/core';
 import { Applist } from './list.component';
 import { AppList2 } from './list2.component';
 import { AppList3 } from './list3.component';
+import{ AppList4} from './list4.component';
+import{ AppList5} from './list5.component';
 import { AppComponent } from './app.component';
 import { Param} from './params';
+import { RouteParams} from './routeparams';
 import { RouterModule, Routes} from '@angular/router';
 import { appService } from 'src/app/app.service';
 import { FormsModule }   from '@angular/forms';
@@ -20,9 +23,11 @@ import{MatNativeDateModule}from '@angular/material';
 import{MatFormFieldModule}from '@angular/material';
 import {platformBrowserDynamic} from '@angular/platform-browser-dynamic';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { DragulaModule } from 'ng2-dragula';
 import {MatInputModule,MatAutocompleteModule,
   MatBadgeModule,
   MatBottomSheetModule,
+  
 
   MatButtonToggleModule,
   MatCardModule,
@@ -60,16 +65,18 @@ const appRoutes: Routes = [
   { path: 'list', component: Applist },
   { path: 'list2', component: AppList2 },
   { path: 'list3', component:  AppList3},
+  {path: 'list4',component: AppList4},
+  {path: 'list5',component: AppList5},
   { path:'form', component: Form},
-  {path:'getdata', component: Param}
-  // { path: 'params/:id', component:Params }
+  {path:'getdata', component: Param},
+  { path: 'params/:id', component:RouteParams }
 ];
 
 @NgModule({
   declarations: [
-    AppComponent,Applist,AppList2,AppList3,Form,Param],
+    AppComponent,Applist,AppList2,AppList3,AppList4,AppList5,Form,Param,RouteParams],
   imports: [
-   BrowserAnimationsModule,
+   BrowserAnimationsModule,DragulaModule.forRoot(),
     BrowserModule ,RouterModule.forRoot(appRoutes),ReactiveFormsModule,FormsModule,HttpClientModule,MatTabsModule,MatCardModule,MatButtonModule,MatNativeDateModule, MatCheckboxModule,MatDatepickerModule,MatFormFieldModule,MatInputModule],
   providers: [appService,{ provide: LocationStrategy, useClass: HashLocationStrategy}],
   bootstrap: [AppComponent],
@@ -108,7 +115,7 @@ const appRoutes: Routes = [
     MatTabsModule,
     MatToolbarModule,
     MatTooltipModule,
-    MatTreeModule,
+    MatTreeModule
   ]
 })
 export class AppModule { }

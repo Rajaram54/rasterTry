@@ -1,0 +1,8 @@
+<div class="fbtool">
+    <div class="spantool">
+      <span *ngFor=" let img of imagesArr" [style.height.px]="20" dragula="DRAGULA">
+        <img src="{{img}}" style="height:50px;width:50px;">
+      </span>
+    </div>
+</div>
+<list-comp></list-comp>
