@@ -24,6 +24,7 @@ import{MatFormFieldModule}from '@angular/material';
 import {platformBrowserDynamic} from '@angular/platform-browser-dynamic';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { DragulaModule } from 'ng2-dragula';
+import * as $ from 'jquery';
 import {MatInputModule,MatAutocompleteModule,
   MatBadgeModule,
   MatBottomSheetModule,
