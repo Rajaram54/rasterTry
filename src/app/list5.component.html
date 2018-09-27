@@ -1,1 +1,14 @@
-<div class="list5" style="height:70px;border-style:solid; border-width: 2px;border-color: black"></div>
+<!-- <div *ngFor="let vid from videothumbnail" style="width:100px;height: 100px;">
+  </div> -->
+  <div>
+    <video></video>
+  </div>
+  <div *ngFor="let i of count">
+    <div>
+      <span>{{i.form}}</span>
+      <input type="text" name="name" [(ngModel)] = "i.value.name">
+      <input type="text" name="name" [(ngModel)] = "i.value.age">
+    </div>
+  </div>
+  <input type="button" (click)="increment()" value="+">
+  <input type="submit" (click)="submit()">

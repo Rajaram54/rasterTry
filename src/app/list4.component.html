@@ -1,8 +1,13 @@
-<div class="fbtool">
-    <div class="spantool">
-      <span *ngFor=" let img of imagesArr" [style.height.px]="20" dragula="DRAGULA">
+<div class="fbtool" style="height:50px;width:20px;">
+    <!-- <div class="container" [dragula]='"reception-bar-bag"' [dragulaOptions]="options"> -->
+        <div class="container" (click)="click($event)" >
+      <span *ngFor=" let img of imagesArr" >
         <img src="{{img}}" style="height:50px;width:50px;">
       </span>
     </div>
+</div>
+<div *ngIf="flag">
+  <img src="{{this.path}}" style="height: 100px;width: 100px;">
+  <button>rotate left <i class="fa fa-rotate-left"></i></button>
 </div>
 <list-comp></list-comp>

@@ -35,6 +35,8 @@ export class AppList3 {
     private isImg1: any = false;
     private isImg2: any = false;
     private isImg3: any = false;
+    private vidsrc: Array<any> = new Array();
+
 
 
     // hitOption Activation 
@@ -50,6 +52,7 @@ export class AppList3 {
     constructor(public service: appService) {
 
         this.imgsrc = this.service.getImages();
+        this.vidsrc=this.service.getVideo();
     }
     ngOnInit(): void {
 
@@ -602,6 +605,41 @@ export class AppList3 {
             paper.projects[currIndex].activate();
         }
     }
+    loadVideo(){
+        if (paper.project.view.element.id == "myCanvas") { this.isImg1 = true; }
+        if (paper.project.view.element.id == "myCanvas1") { this.isImg2 = true; }
+        if (paper.project.view.element.id == "myCanvas2") { this.isImg3 = true; }
+        let imagDiv = document.getElementById('images');
+        this.loadedImage = null;
+        if (imagDiv.childElementCount) {
+            for (let index = 0; index < imagDiv.children.length; index++) {
+                if (imagDiv.children[index]['src'] == `${window.location.protocol}//${window.location.host}${this.vidsrc[0].slice(1)}`) {
+                    this.loadedImage = imagDiv.children[index];
+                    console.log("img on cache");
+                }
+            }
+        }
+        //if (!this.selectRaster()) {
+        if (this.loadedImage) {
+            this.setupRaster(this.loadedImage);
+        } else {
+            this.img = document.createElement('video');
+            this.img.src=this.vidsrc;
+            this.img.autoplay=true;
+            this.img.id="video";
+            console.log("img from network");
+            imagDiv.appendChild(this.img);
+           
+                this.setupRaster(this.img);
+           
+            this.img.onerror = () => {
+                //  console.log("image on error");
+            }
+            this.img.src = this.vidsrc;
+            this.imgarray.push(this.img);
+        }
+    }
+    
     loadImage() {
         this.isImg = true;
         if (paper.project.view.element.id == "myCanvas") { this.isImg1 = true; }
@@ -613,6 +651,7 @@ export class AppList3 {
             for (let index = 0; index < imagDiv.children.length; index++) {
                 if (imagDiv.children[index]['src'] == `${window.location.protocol}//${window.location.host}${this.imgsrc[this.currentImgIndex].slice(1)}`) {
                     this.loadedImage = imagDiv.children[index];
+                    console.log("img on cache");
                 }
             }
         }
@@ -621,6 +660,7 @@ export class AppList3 {
             this.setupRaster(this.loadedImage);
         } else {
             this.img = new Image();
+            console.log("img from network")
             imagDiv.appendChild(this.img);
             this.img.onload = () => {
                 this.setupRaster(this.img);
@@ -824,7 +864,7 @@ export class AppList3 {
         paper.view.draw();
     }
     setupRaster(img) {
-        console.log("image on load");
+        //console.log("image on load");
         this.removeCurrentRaster();
         this.raster = new paper.Raster(img);
         this.raster.sendToBack();

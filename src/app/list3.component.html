@@ -6,9 +6,10 @@
 
 <button class="btn success" (click)="loadImage()">Load Image</button>
 <button class="btn success" (click)="cutImage()">Cut Image</button>
+<button class="btn success" (click)="loadVideo()">Load Video</button>
 <br>
-<div class="canvasContainer">
-        <div class="frame">
+<div class="canvasContainer" (click)="loadVideo()">
+        <div class="frame" >
                 <canvas #canvas1 id="myCanvas" class="canvas" (wheel)="scrollFunc($event)"></canvas>
                 <div *ngIf="isImg1" class="scrollArea" [style.left.px]="canvas1.width - 9" [style.height.px]="canvas1.height">
                         <div class="scroller" [style.height.px]="canvas1.height/imgsrc.length" [style.top.px]="(canvas1.height/imgsrc.length) * ( +canvas1.getAttribute('imgIndex'))"></div>
@@ -29,4 +30,5 @@
                 </div>
         </div>
 </div>
-<div id="images" [style.display]="'none'"></div>
+<div class="container">
+<div id="images" [style.display]="''"></div></div>

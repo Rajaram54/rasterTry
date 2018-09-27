@@ -23,7 +23,9 @@ import{MatNativeDateModule}from '@angular/material';
 import{MatFormFieldModule}from '@angular/material';
 import {platformBrowserDynamic} from '@angular/platform-browser-dynamic';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import { DragulaModule } from 'ng2-dragula';
+import { DragulaModule, DragulaService } from 'ng2-dragula';
+import { TreeModule } from 'angular-tree-component';
+
 import * as $ from 'jquery';
 import {MatInputModule,MatAutocompleteModule,
   MatBadgeModule,
@@ -77,7 +79,7 @@ const appRoutes: Routes = [
   declarations: [
     AppComponent,Applist,AppList2,AppList3,AppList4,AppList5,Form,Param,RouteParams],
   imports: [
-   BrowserAnimationsModule,DragulaModule.forRoot(),
+   BrowserAnimationsModule,DragulaModule,TreeModule,
     BrowserModule ,RouterModule.forRoot(appRoutes),ReactiveFormsModule,FormsModule,HttpClientModule,MatTabsModule,MatCardModule,MatButtonModule,MatNativeDateModule, MatCheckboxModule,MatDatepickerModule,MatFormFieldModule,MatInputModule],
   providers: [appService,{ provide: LocationStrategy, useClass: HashLocationStrategy}],
   bootstrap: [AppComponent],
@@ -116,7 +118,10 @@ const appRoutes: Routes = [
     MatTabsModule,
     MatToolbarModule,
     MatTooltipModule,
-    MatTreeModule
+    MatTreeModule,
+    DragulaModule,
+    TreeModule
+
   ]
 })
 export class AppModule { }
