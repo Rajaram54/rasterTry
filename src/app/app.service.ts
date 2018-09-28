@@ -32,4 +32,7 @@ const httpOptions = {
         this.http.get("/vid")
          return ['./assets/movie.mp4'];
     }
+    putdeatils(obj:Object){
+        this.http.post("/tabl",JSON.stringify(obj), httpOptions).subscribe((res)=>console.log("insert"))
+    }
  } 

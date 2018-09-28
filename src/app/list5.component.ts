@@ -13,6 +13,7 @@ export class AppList5 {
   public count;
   public instance;
   constructor(private service: appService) {
+
     this.videothumbnail=service.getVideo();
     this.instance=1;
     this.count = [{'form': this.instance, 
@@ -22,9 +23,11 @@ export class AppList5 {
   }
   increment(){
     this.instance++;
-    this.count.push({'form': this.instance, 'value': {'name': ''}  });
+    this.count.push({'form': this.instance, 'value': {'name': '',age:''}  });
   }
   submit(){
     console.log('Model value', this.count);
+    this.service.putdeatils(this.count);
+    location.reload();
   }
 }
