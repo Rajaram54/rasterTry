@@ -8,6 +8,7 @@ import { AppList2 } from './list2.component';
 import { AppList3 } from './list3.component';
 import{ AppList4} from './list4.component';
 import{ AppList5} from './list5.component';
+import{ AppList6} from './list6.component';
 import { AppComponent } from './app.component';
 import { Param} from './params';
 import { RouteParams} from './routeparams';
@@ -77,7 +78,7 @@ const appRoutes: Routes = [
 
 @NgModule({
   declarations: [
-    AppComponent,Applist,AppList2,AppList3,AppList4,AppList5,Form,Param,RouteParams],
+    AppComponent,Applist,AppList2,AppList3,AppList4,AppList5,AppList6,Form,Param,RouteParams],
   imports: [
    BrowserAnimationsModule,DragulaModule,TreeModule,
     BrowserModule ,RouterModule.forRoot(appRoutes),ReactiveFormsModule,FormsModule,HttpClientModule,MatTabsModule,MatCardModule,MatButtonModule,MatNativeDateModule, MatCheckboxModule,MatDatepickerModule,MatFormFieldModule,MatInputModule],

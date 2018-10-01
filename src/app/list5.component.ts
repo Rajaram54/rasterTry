@@ -5,6 +5,7 @@ import {appService} from './app.service';
 @Component ({
    selector: 'list-comp',
    templateUrl: './list5.component.html',
+   styleUrls: ['./list5.component.css']
 })
 
 export class AppList5 {
@@ -12,6 +13,7 @@ export class AppList5 {
   public videothumbnail:Array<any>;
   public count;
   public instance;
+  public sel:boolean=false;
   constructor(private service: appService) {
 
     this.videothumbnail=service.getVideo();

@@ -35,4 +35,9 @@ const httpOptions = {
     putdeatils(obj:Object){
         this.http.post("/tabl",JSON.stringify(obj), httpOptions).subscribe((res)=>console.log("insert"))
     }
+
+    getModel(){
+        
+        return this.http.get('/getModel');
+    }
  } 

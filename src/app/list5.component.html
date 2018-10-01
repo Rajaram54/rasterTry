@@ -1,14 +1,37 @@
 <!-- <div *ngFor="let vid from videothumbnail" style="width:100px;height: 100px;">
   </div> -->
-  <div>
-    <video></video>
+<div>
+  <video></video>
+</div>
+<div>
+  <div *ngIf="sel">
+      <div class="row">
+          <div class="col-lg-1"> Group Name:</div>
+          <div class="col-lg-1">
+    <input type="text" name="input" id="input">
+ </div> </div></div>
+  <div *ngIf="!sel">
+      <div class="row">
+          <div class="col-lg-1"> Group Name:</div>
+          <div class="col-lg-1">
+    <input type="text" name="input1" id="input1"></div>
   </div>
-  <div *ngFor="let i of count">
-    <div>
-      <span>{{i.form}}</span>
-      <input type="text" name="name" [(ngModel)] = "i.value.name">
-      <input type="text" name="name" [(ngModel)] = "i.value.age">
-    </div>
+</div>
+<div *ngFor="let i of count">
+  <div class="card">
+  <div class="row">
+    <span>{{i.form}}</span><br><hr>
+    <div class="col-lg-1"> Name:</div>
+    <div class="col-lg-4"> <input type="text" name="name" [(ngModel)]="i.value.name"></div>
   </div>
-  <input type="button" (click)="increment()" value="+">
-  <input type="submit" (click)="submit()">
+  <div class="row">
+    <div class="col-lg-1">
+      age</div>
+    <div class="col-lg-4"> <input type="text" name="name" [(ngModel)]="i.value.age"></div>
+
+  </div>
+  </div>
+</div>
+<div class="card">
+<input type="button" (click)="increment()" value="+">
+<input type="submit" (click)="submit()"></div>
