@@ -1,6 +1,6 @@
-<div ngif="flag">
-  <div ngfor="let i of list">
-    <button type="submit" style="height:100px;width: 100px; background-color:blue"></button>
+<div>
+  <div *ngFor="let index of arrList">
+    <button type="submit" style="height:100px;width: 100px;" id="{{index.form}}"  (click)="fun($event)">{{index.form}}</button>
   </div>
 </div>
 <button type="submit" style="height:100px;width: 100px;" (click)="fun()">+</button>
@@ -29,7 +29,6 @@ var config = {
   idleTimeoutMillis: 30000, // how long a client is allowed to remain idle before being closed
 };
 var pool = new pg.Pool(config);
- 
 app.post('/form', function (req, res, next) {
  // window.alert("came in");
  console.log(req.body,"req@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
@@ -96,7 +95,27 @@ app.get("/getModel", function (req, res) {
             res.status(400).send(err, "");
 
         }
-        client.query(`SELECT DISTINCT form FROM details ORDER BY form ASC`, function (err, result) {
+        client.query(`SELECT DISTINCT (form) FROM details`, function (err, result) {
+            done();
+            if (err) {
+                throw err;
+            }
+            console.log("hello", result.rows);
+            res.send(result.rows); // assumes 'results.rows' can be serialized to JSON
+        })
+
+    })
+});
+
+app.get("/getDetails", function (req, res) {
+    console.log(req.query.model,"####################");
+    pool.connect(function (err, client, done) {
+        if (err) {
+            console.log(err);
+            res.status(400).send(err, "");
+
+        }
+        client.query(`SELECT * FROM details where form=${req.query.model} `, function (err, result) {
             done();
             if (err) {
                 throw err;

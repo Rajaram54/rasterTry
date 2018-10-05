@@ -36,8 +36,14 @@ const httpOptions = {
         this.http.post("/tabl",JSON.stringify(obj), httpOptions).subscribe((res)=>console.log("insert"))
     }
 
-    getModel(){
-        
+    getModel(){   
         return this.http.get('/getModel');
     }
+     getDeatils(modelName?) {
+         return this.http.get("/getDetails", {
+             params: {
+                 model: modelName||'',
+             }
+         });
+     }
  } 

@@ -73,7 +73,8 @@ const appRoutes: Routes = [
   {path: 'list5',component: AppList5},
   { path:'form', component: Form},
   {path:'getdata', component: Param},
-  { path: 'params/:id', component:RouteParams }
+  { path: 'params/:id', component:RouteParams },
+  { path: 'list5/:ModelName',component:AppList5}
 ];
 
 @NgModule({

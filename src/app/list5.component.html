@@ -3,24 +3,36 @@
 <div>
   <video></video>
 </div>
-<div>
-  <div *ngIf="sel">
+  <div *ngIf="!sel">
       <div class="row">
           <div class="col-lg-1"> Group Name:</div>
           <div class="col-lg-1">
     <input type="text" name="input" id="input">
  </div> </div></div>
-  <div *ngIf="!sel">
+  <div *ngIf="sel">
       <div class="row">
           <div class="col-lg-1"> Group Name:</div>
           <div class="col-lg-1">
-    <input type="text" name="input1" id="input1"></div>
+    <input type="text" name="input1" id="input1" value={{modelName}}></div>
   </div>
 </div>
+<div *ngIf="displaylist[0]" class="card">
+  <div *ngFor="let i of displaylist[0]">
+    <div class="row">
+      <div class="col-lg-1"> Name:</div>
+      <div class="col-lg-4"> <input type="text" name="name" value={{i.name}}></div>
+    </div>
+    <div class="row">
+      <div class="col-lg-1">
+        age:</div>
+      <div class="col-lg-4"> <input type="text" name="name" value={{i.age}}></div>
+  
+    </div>
+    </div>
+    </div>
 <div *ngFor="let i of count">
   <div class="card">
   <div class="row">
-    <span>{{i.form}}</span><br><hr>
     <div class="col-lg-1"> Name:</div>
     <div class="col-lg-4"> <input type="text" name="name" [(ngModel)]="i.value.name"></div>
   </div>
